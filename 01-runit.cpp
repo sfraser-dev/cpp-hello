@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -120,20 +121,58 @@ void recCountDownFrom(int n) { // init
 
 class Vehicle {
   private:
-    std::string brand;
-    std::string model;
+    std::string _brand;
+    std::string _model;
+    short _wheels;
 
   public:
-    Vehicle(std::string b, std::string m) :  brand(b), model(m) {}
+    Vehicle(std::string brand, std::string model, int wheels, std::string sound)
+        : _brand(brand), _model(model), _wheels(wheels)  {}
 
     ~Vehicle() {}
 
-    void honk() { std::cout << "honk honk" << std::endl; }
-    auto setBrand(std::string b) { brand = b; }
-    auto setModel(std::string m) { model = m; }
-    auto getBrand() { return brand; }
-    auto getModel() { return model; }
+    // pure virtual function makes this Vehicle class abstract
+    virtual void makeSound() = 0;
+
+    void printInfo();
+
+    // getters and setter
+    auto getBrand() { return this->_brand; }
+    auto getModel() { return this->_model; }
+    auto getWheels() { return this->_wheels; }
+    auto setBrand(std::string brand) { this->_brand = brand; }
+    auto setModel(std::string model) { this->_model = model; }
+    auto setWheels(short wheels) { this->_wheels = wheels; }
 };
+void Vehicle::printInfo() {
+    std::cout << "Brand: " << this->getBrand()
+              << ", Model: " << this->getModel()
+              << ", Wheels: " << this->getWheels() << std::endl;
+}
+
+class Car : public Vehicle {
+  public:
+    // hardcode all cars to have four wheels
+    Car(std::string brand, std::string model, std::string sound)
+        : Vehicle(brand, model, 4, sound) {}
+    ~Car() {}
+
+    void makeSound() override;
+};
+void Car::makeSound() { std::cout << "beep beep" << std::endl; }
+
+class Motorbike : public Vehicle {
+  public:
+    // hardcode all motorbikes to have two wheels
+    Motorbike(std::string brand, std::string model, std::string sound)
+        : Vehicle(brand, model, 2, sound) {}
+    ~Motorbike() {}
+
+    void makeSound() override;
+};
+void Motorbike::makeSound() { std::cout << "vroom vroom" << std::endl; }
+
+void vehicleSound(Vehicle* v) { v->makeSound(); }
 
 int main() {
     // string type
@@ -394,8 +433,18 @@ int main() {
     recCountDownFrom(5);
     std::cout << std::endl;
 
-    Vehicle veh("Honda", "Civic");
-    std::cout << "The car is a " << veh.getBrand() << " " << veh.getModel() << std::endl;
+    // classes
+    Car car("Honda", "Civic", "car beep beep");
+    car.printInfo();
+    car.setBrand("Ford");
+    car.setModel("Focus");
+    car.printInfo();
+    Motorbike motorbike("Harley", "Fat Boy", "vroom vroom");
+    motorbike.printInfo();
+
+    // polymorphism
+    vehicleSound(&car);
+    vehicleSound(&motorbike);
 
     return 0;
 }
