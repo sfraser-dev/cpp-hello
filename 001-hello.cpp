@@ -9,7 +9,51 @@
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
+
+template <typename T>
+auto printSmartUniquePtrArray(std::unique_ptr<T[]> theArray, int size,
+                              int digitWidth) {
+    for (std::size_t i = 0; i < size; i++) {
+        std::cout << std::setfill('0') << std::setw(digitWidth) << theArray[i]
+                  << " ";
+    }
+    std::cout << std::endl;
+}
+
+template <typename T>
+auto printSmartUniquePtrMatrix(
+    std::unique_ptr<std::unique_ptr<T[]>[]> theMatrix, int rows, int cols,
+    int digitWidth) {
+    for (std::size_t r = 0; r < rows; r++) {
+        for (std::size_t c = 0; c < cols; c++) {
+            std::cout << std::setfill('0') << std::setw(digitWidth)
+                      << theMatrix[r][c] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+template <typename T> auto printRawPtrArray(T *arr, int size, int digitWidth) {
+    for (std::size_t i = 0; i < size; i++) {
+        std::cout << std::setfill('0') << std::setw(digitWidth) << arr[i]
+                  << " ";
+    }
+    std::cout << std::endl;
+}
+
+template <typename T>
+auto printRawPtrMatrix(T **mat, int rows, int cols, int digitWidth) {
+    for (std::size_t r = 0; r < rows; r++) {
+        for (std::size_t c = 0; c < cols; c++) {
+            std::cout << std::setfill('0') << std::setw(digitWidth) << mat[r][c]
+                      << " ";
+        }
+        std::cout << std::endl;
+    }
+}
 
 auto myRefSwap(int &a, int &b) {
     auto temp = a;
@@ -35,13 +79,13 @@ template <typename T, std::size_t S> auto myRefArr(std::array<T, S> &arr) {
 }
 
 // recursion, build the stack and AFTERWARDS execute as clearing stack (code
-// blocks left on stack) N = 5 5 + Fn(4) 5 + 4 + Fn(3) 5 + 4 + 3 + Fn(2) 5 + 4 +
-// 3 + 2 + Fn(1) 5 + 4 + 3 + 2 + 1 + Fn(0) -> 0 + 1 + 2 + 3 + 4 + 5
+// blocks left on stack) N = 5 5 + Fn(4) 5 + 4 + Fn(3) 5 + 4 + 3 + Fn(2) 5 +
+// 4 + 3 + 2 + Fn(1) 5 + 4 + 3 + 2 + 1 + Fn(0) -> 0 + 1 + 2 + 3 + 4 + 5
 void recCountUpTo(int n) {     // init
     if (n > 0) {               // check
         recCountUpTo(n - 1);   // update and recursion ABOVE code block
-        std::cout << n << " "; // code block left on stack (LIFO), executed as
-                               // stack diminishes (pops)
+        std::cout << n << " "; // code block left on stack (LIFO), executed
+                               // as stack diminishes (pops)
     } else {
         std::cout << "0 ";
     }
@@ -114,9 +158,10 @@ int main() {
     }
     std::cout << std::endl;
 
-    // vector
+    // 1-d vector
     std::vector<int> myVec = {100, 200, 300, 400, 500};
-    // foreach to loop ALL elements VALUES (not index) of an array, ranged loop
+    // foreach to loop ALL elements VALUES (not index) of an array, ranged
+    // loop
     for (std::size_t i : myVec) {
         std::cout << i << " ";
     }
@@ -152,6 +197,8 @@ int main() {
     std::vector<int>::iterator intIter;
     // begin() points to the beginning of the vector
     // end() points to ONE AFTER the end of the vector
+    // best practice should be to use iterators on containers (but vector
+    // can use [])
     for (intIter = myVec2.begin(); intIter != myVec2.end(); intIter++) {
         std::cout << *intIter << " ";
     }
@@ -164,7 +211,7 @@ int main() {
     } myStruct101;
     std::cout << "Struct int: " << myStruct101.i << "; struct string "
               << myStruct101.s << std::endl;
-    // not allowed: struct101 new101;
+    // not allowed, it's not a struct named type: struct101 new101;
 
     // struct named type (and variable declared that uses the struct type)
     struct myStructDataType {
@@ -174,11 +221,11 @@ int main() {
     std::cout << "Struct int: " << myStruct202.i << "; struct string "
               << myStruct202.s << std::endl;
 
-    // References and Pointers are important in C++, because they give you the
-    // ability to manipulate the data in the computer's memory - which can
-    // reduce the code and improve the performance. These two features are one
-    // of the things that make C++ stand out from other programming languages,
-    // like Python and Java.
+    // References and Pointers are important in C++, because they give you
+    // the ability to manipulate the data in the computer's memory - which
+    // can reduce the code and improve the performance. These two features
+    // are one of the things that make C++ stand out from other programming
+    // languages, like Python and Java.
 
     // references (alias)
     auto a = 5;
@@ -187,7 +234,7 @@ int main() {
     a++;
     std::cout << "a = " << a << ", b = " << b << std::endl;
 
-    // pointers
+    // raw pointers
     auto x = 303;
     auto *ptr = &x;
     std::cout << "x = " << x << ", ptr = " << ptr << ", *ptr = " << *ptr
@@ -211,32 +258,25 @@ int main() {
     myPtrSwap(&third, &fourth);
     std::cout << "third = " << third << ", fourth = " << fourth << std::endl;
 
-    // raw dynamic array for image processing
+    // raw dynamic 2-d array (matrix)
     auto rows = 3;
     auto cols = 3;
-    // pointer to a 1-d array of the whole image
-    // C style "raw" pointer
+    auto traverse = rows * cols;
+    // pointer to a raw 1-d array (containing full 2-d matrix as a single
+    // row) C style "raw" pointer
     auto *myArray = new int[rows * cols];
     for (std::size_t i = 0; i < rows * cols; i++) {
-        myArray[i] = i;
-        std::cout << myArray[i] << " ";
+        myArray[i] = --traverse;
     }
-    std::cout << std::endl;
-    // create the matrix via an array of pointers pointing to the
-    // column starting positions in the 1-d image array
+    printRawPtrArray<int>(myArray, rows * cols, 2);
+    // create the matrix (2-d array) via an array of pointers pointing
+    // to the column starting positions in the 1-d array
     // C style "raw" pointer
-    auto **myMatrix = new int*[rows];
+    auto **myMatrix = new int *[rows];
     for (std::size_t r = 0; r < rows; r++) {
         myMatrix[r] = &(myArray[r * cols]);
     }
-    // print the matrix
-    for (std::size_t r = 0; r < rows; r++) {
-        for (std::size_t c = 0; c < cols; c++) {
-            std::cout << myMatrix[r][c] << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
+    printRawPtrMatrix<int>(myMatrix, rows, cols, 2);
     // clean up. for each new used need a delete. for each new[] used need a
     // delete[] C style dumb pointer
     delete[] myMatrix[0];
@@ -246,49 +286,58 @@ int main() {
 
     rows = 5;
     cols = 5;
-    auto traverse = rows * cols;
+    traverse = rows * cols;
+
     // "new" array created on the heap and then passed to a smart pointer's
-    // constructor). works, but best not to use new (nor delete) at all in
-    // modern C++ raw pointer creation was: int *myArray = new int[rows * cols];
+    // constructor. works, but best not to use new (nor delete) at all in
+    // modern C++ raw pointer creation was: int *myArray = new int[rows *
+    // cols];
     // std::unique_ptr<int[]> myArraySmart(new int[rows * cols]);
-    // smart unique pointer
+
+    // smart pointer (unique) to array
     std::unique_ptr<int[]> myArraySmart(std::make_unique<int[]>(rows * cols));
     for (std::size_t i = 0; i < rows * cols; i++) {
         myArraySmart[i] = i;
-        std::cout << std::setfill('0') << std::setw(2) << myArraySmart[i]
-                  << " ";
     }
-    std::cout << std::endl;
+    printSmartUniquePtrArray<int>(std::move(myArraySmart), rows * cols, 2);
 
-    // 2-d array without new keyword (make_unique() function instead)
+    // 2-d array (matrix) without new keyword (make_unique() function instead)
     std::unique_ptr<std::unique_ptr<int[]>[]> smartPtr2D;
     std::unique_ptr<int[]> smartPtr1D;
-    auto dataCounter = 0;
-    // make an array of unique pointers pointing to integers
+    traverse = 0;
+    // create an array of unique pointers that point to integers
+    // these will point to the "row starts"
     smartPtr2D = std::make_unique<std::unique_ptr<int[]>[]>(rows);
     for (std::size_t i = 0; i < rows; i++) {
-        // make a unique pointer point to an array of integers
+        // create a unique pointer that points to an array of integers
         smartPtr1D = std::make_unique<int[]>(cols);
         // fill the array with integers
-        for (int j = 0; j < cols; j++) {
-            smartPtr1D[j] = dataCounter;
-            dataCounter++;
+        for (std::size_t j = 0; j < cols; j++) {
+            smartPtr1D[j] = traverse++;
         }
-        // move / copy the pointer from this "row" X to the 2d array at position
-        // X the "2d" array (really 1d) will now contain at its index X a
-        // pointer to elements from "row" X thus giving a "2d" representation of
-        // the data
+        // move / copy the pointer from this "row" X to the 2d array at
+        // position X the "2d" array (really 1d) will now contain at its
+        // index X a pointer to elements from "row" X thus giving a "2d"
+        // representation of the data
         smartPtr2D[i] = std::move(smartPtr1D);
     }
-    // print the matrix
+    printSmartUniquePtrMatrix<int>(std::move(smartPtr2D), rows, cols, 2);
+
+    rows = 6;
+    cols = 6;
+    traverse = 0;
+    // 2-d array (matrix) without new keyword, tidied up code 
+    std::unique_ptr<std::unique_ptr<int[]>[]> myUniqueMatrix;
+    myUniqueMatrix = std::make_unique<std::unique_ptr<int[]>[]>(rows);
+    std::unique_ptr<int[]> myUniqueArrayTemp;
     for (std::size_t r = 0; r < rows; r++) {
+        myUniqueArrayTemp = std::make_unique<int[]>(rows * cols);
         for (std::size_t c = 0; c < cols; c++) {
-            std::cout << std::setfill('0') << std::setw(2) << smartPtr2D[r][c]
-                      << " ";
+            myUniqueArrayTemp[c] = traverse++;
         }
-        std::cout << std::endl;
+        myUniqueMatrix[r] = std::move(myUniqueArrayTemp);
     }
-    std::cout << std::endl;
+    printSmartUniquePtrMatrix<int>(std::move(myUniqueMatrix), rows, cols, 2);
 
     rows = 7;
     cols = 7;
