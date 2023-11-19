@@ -13,7 +13,7 @@
 #include <vector>
 
 template <typename T>
-auto printSmartUniquePtrArray(std::unique_ptr<T[]> theArray, int size,
+void printSmartUniquePtrArray(std::unique_ptr<T[]> theArray, int size,
                               int digitWidth) {
     for (std::size_t i = 0; i < size; i++) {
         std::cout << std::setfill('0') << std::setw(digitWidth) << theArray[i]
@@ -23,7 +23,7 @@ auto printSmartUniquePtrArray(std::unique_ptr<T[]> theArray, int size,
 }
 
 template <typename T>
-auto printSmartUniquePtrMatrix(
+void printSmartUniquePtrMatrix(
     std::unique_ptr<std::unique_ptr<T[]>[]> theMatrix, int rows, int cols,
     int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
@@ -36,7 +36,7 @@ auto printSmartUniquePtrMatrix(
     std::cout << std::endl;
 }
 
-template <typename T> auto printRawPtrArray(T *arr, int size, int digitWidth) {
+template <typename T> void printRawPtrArray(T *arr, int size, int digitWidth) {
     for (std::size_t i = 0; i < size; i++) {
         std::cout << std::setfill('0') << std::setw(digitWidth) << arr[i]
                   << " ";
@@ -45,7 +45,7 @@ template <typename T> auto printRawPtrArray(T *arr, int size, int digitWidth) {
 }
 
 template <typename T>
-auto printRawPtrMatrix(T **mat, int rows, int cols, int digitWidth) {
+void printRawPtrMatrix(T **mat, int rows, int cols, int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
             std::cout << std::setfill('0') << std::setw(digitWidth) << mat[r][c]
@@ -56,7 +56,7 @@ auto printRawPtrMatrix(T **mat, int rows, int cols, int digitWidth) {
 }
 
 template <typename T>
-auto printVectorMatrix(std::vector<std::vector<T>> &vec, int rows, int cols,
+void printVectorMatrix(std::vector<std::vector<T>> &vec, int rows, int cols,
                        int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
@@ -68,27 +68,27 @@ auto printVectorMatrix(std::vector<std::vector<T>> &vec, int rows, int cols,
     std::cout << std::endl;
 }
 
-auto myRefSwap(int &a, int &b) {
-    auto temp = a;
-    a = b;
-    b = temp;
-}
-
-auto myPtrSwap(int *a, int *b) {
-    auto temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
 // reference to an arr passed as parameter (brackets needed or it would
 // be an array of references). template used so can capture the size of
 // the array at compile time
-template <typename T, std::size_t S> auto myRefArr(std::array<T, S> &arr) {
+template <typename T, std::size_t S> void myRefArr(std::array<T, S> &arr) {
     for (std::size_t i = 0; i < S; i++) {
         arr[i] = pow(arr[i], 3);
         std::cout << arr[i] << " ";
     }
     std::cout << std::endl;
+}
+
+void myRefSwap(int &a, int &b) {
+    auto temp = a;
+    a = b;
+    b = temp;
+}
+
+void myPtrSwap(int *a, int *b) {
+    auto temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 // recursion, build the stack and AFTERWARDS execute as clearing stack (code
@@ -111,12 +111,29 @@ void recCountUpTo(int n) {     // init
 void recCountDownFrom(int n) { // init
     if (n > 0) {               // check
         std::cout << n
-                  << " ";    // code block executed as stack builds up (pushes)
-        recCountUpTo(n - 1); // update and recursion BELOW code block
+                  << " "; // code block executed as stack builds up (pushes)
+        recCountDownFrom(n - 1); // update and recursion BELOW code block
     } else {
         std::cout << "0 ";
     }
 }
+
+class Vehicle {
+  private:
+    std::string brand;
+    std::string model;
+
+  public:
+    Vehicle(std::string b, std::string m) :  brand(b), model(m) {}
+
+    ~Vehicle() {}
+
+    void honk() { std::cout << "honk honk" << std::endl; }
+    auto setBrand(std::string b) { brand = b; }
+    auto setModel(std::string m) { model = m; }
+    auto getBrand() { return brand; }
+    auto getModel() { return model; }
+};
 
 int main() {
     // string type
@@ -376,6 +393,9 @@ int main() {
     std::cout << std::endl;
     recCountDownFrom(5);
     std::cout << std::endl;
+
+    Vehicle veh("Honda", "Civic");
+    std::cout << "The car is a " << veh.getBrand() << " " << veh.getModel() << std::endl;
 
     return 0;
 }
