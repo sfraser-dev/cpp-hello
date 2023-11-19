@@ -55,6 +55,19 @@ auto printRawPtrMatrix(T **mat, int rows, int cols, int digitWidth) {
     }
 }
 
+template <typename T>
+auto printVectorMatrix(std::vector<std::vector<T>> &vec, int rows, int cols,
+                       int digitWidth) {
+    for (std::size_t r = 0; r < rows; r++) {
+        for (std::size_t c = 0; c < cols; c++) {
+            std::cout << std::setfill('0') << std::setw(digitWidth) << vec[r][c]
+                      << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 auto myRefSwap(int &a, int &b) {
     auto temp = a;
     a = b;
@@ -197,7 +210,7 @@ int main() {
     std::vector<int>::iterator intIter;
     // begin() points to the beginning of the vector
     // end() points to ONE AFTER the end of the vector
-    // best practice should be to use iterators on containers (but vector
+    // best practice should be to use iterators on containers (but vectors
     // can use [])
     for (intIter = myVec2.begin(); intIter != myVec2.end(); intIter++) {
         std::cout << *intIter << " ";
@@ -326,7 +339,7 @@ int main() {
     rows = 6;
     cols = 6;
     traverse = 0;
-    // 2-d array (matrix) without new keyword, tidied up code 
+    // 2-d array (matrix) without new keyword, tidied up code
     std::unique_ptr<std::unique_ptr<int[]>[]> myUniqueMatrix;
     myUniqueMatrix = std::make_unique<std::unique_ptr<int[]>[]>(rows);
     std::unique_ptr<int[]> myUniqueArrayTemp;
@@ -350,11 +363,9 @@ int main() {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
             vecMatrix[r][c] = --traverse;
-            std::cout << std::setfill('0') << std::setw(2) << vecMatrix[r][c]
-                      << " ";
         }
-        std::cout << std::endl;
     }
+    printVectorMatrix<int>(vecMatrix, rows, cols, 2);
 
     // passing std::array to function as reference
     std::array<int, 4> stlArr = {10, 20, 30, 40};
