@@ -1,7 +1,12 @@
 // w3schools C++ tutorial
+#include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstddef>
+#include <iomanip>
 #include <iostream>
+#include <iterator>
+#include <memory>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -21,8 +26,8 @@ void myPtrSwap(int *a, int *b) {
 // reference to an arr passed as parameter (brackets needed or it would
 // be an array of references). template used so can capture the size of
 // the array at compile time
-template <typename T, size_t S> void myRefArr(std::array<T, S> &arr) {
-    for (size_t i = 0; i < S; i++) {
+template <typename T, std::size_t S> void myRefArr(std::array<T, S> &arr) {
+    for (std::size_t i = 0; i < S; i++) {
         arr[i] = pow(arr[i], 3);
         std::cout << arr[i] << " ";
     }
@@ -43,7 +48,7 @@ void recCountUpTo(int n) {     // init
 }
 
 //
-// for loop init, check and update
+// comparison with for loop: init, check and update
 // for (int i = n; i > 0; i--) { code block; }
 // recursion, execute up the stack (no code blocks on stack)
 void recCountDownFrom(int n) { // init
@@ -66,7 +71,7 @@ int main() {
               << "; and the size of myStr is: " << myStr.size() << std::endl;
 
     // iterate through string
-    for (int i = 0; i < myStr.length(); i++) {
+    for (std::size_t i = 0; i < myStr.length(); i++) {
         std::cout << myStr[i] << " ";
     }
     std::cout << std::endl;
@@ -104,7 +109,7 @@ int main() {
 
     // length of an array
     std::string cars[4] = {"Volvo", "BMW", "Ford", "Mazda"};
-    for (short i = 0; i < sizeof(cars) / sizeof(std::string); i++) {
+    for (std::size_t i = 0; i < sizeof(cars) / sizeof(std::string); i++) {
         std::cout << cars[i] << " ";
     }
     std::cout << std::endl;
@@ -112,7 +117,7 @@ int main() {
     // vector
     std::vector<int> myVec = {100, 200, 300, 400, 500};
     // foreach to loop ALL elements VALUES (not index) of an array, ranged loop
-    for (auto i : myVec) {
+    for (std::size_t i : myVec) {
         std::cout << i << " ";
     }
     std::cout << std::endl;
@@ -121,7 +126,7 @@ int main() {
     myVec.push_back(1001);
     // .at() is safer then just using "i", it'll throw exception rather than
     // return garbage
-    for (int i = 0; i < myVec.size(); i++) {
+    for (std::size_t i = 0; i < myVec.size(); i++) {
         std::cout << myVec.at(i) << " ";
     }
     std::cout << std::endl;
@@ -130,7 +135,7 @@ int main() {
     myVec.pop_back();
     myVec.pop_back();
     myVec.pop_back();
-    for (auto i : myVec) {
+    for (std::size_t i : myVec) {
         std::cout << i << " ";
     }
     std::cout << std::endl;
@@ -138,7 +143,7 @@ int main() {
     // vector dynamically sized with each element initialised to zero
     int theSize = 7;
     std::vector<int> myVec2(theSize, 0);
-    for (auto i : myVec2) {
+    for (std::size_t i : myVec2) {
         std::cout << i << " ";
     }
     std::cout << std::endl;
@@ -151,10 +156,6 @@ int main() {
         std::cout << *intIter << " ";
     }
     std::cout << std::endl;
-
-    // clear / delete vectors
-    myVec.clear();
-    myVec2.clear();
 
     // structs (array holds single type, struct holds multiple types)
     struct {
@@ -211,44 +212,98 @@ int main() {
     myPtrSwap(&third, &fourth);
     std::cout << "third = " << third << ", fourth = " << fourth << std::endl;
 
-    // dynamic array for image processing
+    // raw dynamic array for image processing
     int rows = 3;
     int cols = 3;
     // pointer to a 1-d array of the whole image
+    // C style "raw" pointer
     int *myArray = new int[rows * cols];
-    for (int i = 0; i < rows * cols; i++) {
+    for (std::size_t i = 0; i < rows * cols; i++) {
         myArray[i] = i;
         std::cout << myArray[i] << " ";
     }
     std::cout << std::endl;
     // create the matrix via an array of pointers pointing to the
     // column starting positions in the 1-d image array
+    // C style "raw" pointer
     int **myMatrix = new int *[rows];
-    for (int r = 0; r < rows; r++) {
+    for (std::size_t r = 0; r < rows; r++) {
         myMatrix[r] = &(myArray[r * cols]);
     }
     // print the matrix
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
+    for (std::size_t r = 0; r < rows; r++) {
+        for (std::size_t c = 0; c < cols; c++) {
             std::cout << myMatrix[r][c] << " ";
         }
         std::cout << std::endl;
     }
     std::cout << std::endl;
-    // clean up. for each new use delete. for each new[] use delete[]
+    // clean up. for each new used need a delete. for each new[] used need a
+    // delete[] C style dumb pointer
     delete[] myMatrix[0];
     myArray = 0;
     delete[] myMatrix;
     myMatrix = 0;
 
+    rows = 5;
+    cols = 5;
+    auto traverse = rows * cols;
+    // "new" array created on the heap and then passed to a smart pointer's
+    // constructor). works, but best not to use new (nor delete) at all in
+    // modern C++ raw pointer creation was: int *myArray = new int[rows * cols];
+    // std::unique_ptr<int[]> myArraySmart(new int[rows * cols]);
+    // smart unique pointer
+    std::unique_ptr<int[]> myArraySmart(std::make_unique<int[]>(rows * cols));
+    for (std::size_t i = 0; i < rows * cols; i++) {
+        myArraySmart[i] = i;
+        std::cout << std::setfill('0') << std::setw(2) << myArraySmart[i]
+                  << " ";
+    }
+    std::cout << std::endl;
+
+    // 2-d array without new keyword (make_unique() function instead)
+    std::unique_ptr<std::unique_ptr<int[]>[]> smartPtr2D;
+    std::unique_ptr<int[]> smartPtr1D;
+    int dataCounter = 0;
+    // make an array of unique pointers pointing to integers
+    smartPtr2D = std::make_unique<std::unique_ptr<int[]>[]>(rows);
+    for (int i = 0; i < rows; i++) {
+        // make a unique pointer point to an array of integers
+        smartPtr1D = std::make_unique<int[]>(cols);
+        // fill the array with integers
+        for (int j = 0; j < cols; j++) {
+            smartPtr1D[j] = dataCounter;
+            dataCounter++;
+        }
+        // move / copy the pointer from this "row" X to the 2d array at position
+        // X the "2d" array (really 1d) will now contain at its index X a
+        // pointer to elements from "row" X thus giving a "2d" representation of
+        // the data
+        smartPtr2D[i] = std::move(smartPtr1D);
+    }
+    // print the matrix
+    for (std::size_t r = 0; r < rows; r++) {
+        for (std::size_t c = 0; c < cols; c++) {
+            std::cout << std::setfill('0') << std::setw(2) << smartPtr2D[r][c]
+                      << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    rows = 7;
+    cols = 7;
+    traverse = rows * cols;
     // 2-d vector, a vector of vectors initiallised to 0
+    // size is being dynamically allocated so need to use ::vector (and not
+    // ::array)
     std::vector<std::vector<int>> vecMatrix(rows, std::vector<int>(cols, 0));
     // ranged loop
-    int traverse = rows * cols;
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
+    for (std::size_t r = 0; r < rows; r++) {
+        for (std::size_t c = 0; c < cols; c++) {
             vecMatrix[r][c] = --traverse;
-            std::cout << vecMatrix[r][c] << " ";
+            std::cout << std::setfill('0') << std::setw(2) << vecMatrix[r][c]
+                      << " ";
         }
         std::cout << std::endl;
     }
