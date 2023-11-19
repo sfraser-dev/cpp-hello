@@ -11,14 +11,14 @@
 #include <type_traits>
 #include <vector>
 
-void myRefSwap(int &a, int &b) {
-    int temp = a;
+auto myRefSwap(int &a, int &b) {
+    auto temp = a;
     a = b;
     b = temp;
 }
 
-void myPtrSwap(int *a, int *b) {
-    int temp = *a;
+auto myPtrSwap(int *a, int *b) {
+    auto temp = *a;
     *a = *b;
     *b = temp;
 }
@@ -26,7 +26,7 @@ void myPtrSwap(int *a, int *b) {
 // reference to an arr passed as parameter (brackets needed or it would
 // be an array of references). template used so can capture the size of
 // the array at compile time
-template <typename T, std::size_t S> void myRefArr(std::array<T, S> &arr) {
+template <typename T, std::size_t S> auto myRefArr(std::array<T, S> &arr) {
     for (std::size_t i = 0; i < S; i++) {
         arr[i] = pow(arr[i], 3);
         std::cout << arr[i] << " ";
@@ -84,7 +84,7 @@ int main() {
     std::string theName;
     std::cout << std::endl << "Input your name: ";
     // cin>> considers whitespace terminating char, so use getline()
-    getline(std::cin, theName);
+    std::getline(std::cin, theName);
     std::cout << "What's up " << theName << std::endl;
 
     // math
@@ -141,7 +141,7 @@ int main() {
     std::cout << std::endl;
 
     // vector dynamically sized with each element initialised to zero
-    int theSize = 7;
+    auto theSize = 7;
     std::vector<int> myVec2(theSize, 0);
     for (std::size_t i : myVec2) {
         std::cout << i << " ";
@@ -181,16 +181,15 @@ int main() {
     // like Python and Java.
 
     // references (alias)
-    int a = 5;
-    int &b = a;
+    auto a = 5;
+    auto &b = a;
     std::cout << "a = " << a << ", b = " << b << std::endl;
     a++;
     std::cout << "a = " << a << ", b = " << b << std::endl;
 
     // pointers
-    int x = 303;
-    int *ptr;
-    ptr = &x;
+    auto x = 303;
+    auto *ptr = &x;
     std::cout << "x = " << x << ", ptr = " << ptr << ", *ptr = " << *ptr
               << std::endl;
     (*ptr) += 7;
@@ -198,26 +197,26 @@ int main() {
               << std::endl;
 
     // pass references to function
-    int first = 100;
-    int second = 200;
+    auto first = 100;
+    auto second = 200;
     std::cout << "first = " << first << ", second = " << second << std::endl;
     std::cout << "swapping..." << std::endl;
     myRefSwap(first, second);
     std::cout << "first = " << first << ", second = " << second << std::endl;
     // pass pointers to function
-    int third = 300;
-    int fourth = 400;
+    auto third = 300;
+    auto fourth = 400;
     std::cout << "third = " << third << ", fourth = " << fourth << std::endl;
     std::cout << "swapping..." << std::endl;
     myPtrSwap(&third, &fourth);
     std::cout << "third = " << third << ", fourth = " << fourth << std::endl;
 
     // raw dynamic array for image processing
-    int rows = 3;
-    int cols = 3;
+    auto rows = 3;
+    auto cols = 3;
     // pointer to a 1-d array of the whole image
     // C style "raw" pointer
-    int *myArray = new int[rows * cols];
+    auto *myArray = new int[rows * cols];
     for (std::size_t i = 0; i < rows * cols; i++) {
         myArray[i] = i;
         std::cout << myArray[i] << " ";
@@ -226,7 +225,7 @@ int main() {
     // create the matrix via an array of pointers pointing to the
     // column starting positions in the 1-d image array
     // C style "raw" pointer
-    int **myMatrix = new int *[rows];
+    auto **myMatrix = new int*[rows];
     for (std::size_t r = 0; r < rows; r++) {
         myMatrix[r] = &(myArray[r * cols]);
     }
@@ -264,10 +263,10 @@ int main() {
     // 2-d array without new keyword (make_unique() function instead)
     std::unique_ptr<std::unique_ptr<int[]>[]> smartPtr2D;
     std::unique_ptr<int[]> smartPtr1D;
-    int dataCounter = 0;
+    auto dataCounter = 0;
     // make an array of unique pointers pointing to integers
     smartPtr2D = std::make_unique<std::unique_ptr<int[]>[]>(rows);
-    for (int i = 0; i < rows; i++) {
+    for (std::size_t i = 0; i < rows; i++) {
         // make a unique pointer point to an array of integers
         smartPtr1D = std::make_unique<int[]>(cols);
         // fill the array with integers
