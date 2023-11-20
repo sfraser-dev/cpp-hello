@@ -3,12 +3,14 @@
 #include <array>
 #include <cmath>
 #include <cstddef>
+#include <exception>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <memory>
 #include <ostream>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -183,6 +185,13 @@ void vehicleSoundPassByPointer(std::shared_ptr<Vehicle> vehicle) {
     vehicle->makeSound();
 }
 
+// hashing a string to an int via a consexpr recursive function
+// so can use string expressions in c++ switch
+// constexp functions are evaluated at compile time, ie: calcualted constants
+constexpr unsigned int myStr2int(const char *str, int h = 0) {
+    return !str[h] ? 5381 : (myStr2int(str, h + 1) * 33) ^ str[h];
+}
+
 int main() {
     // string type
     std::string myStr = "Hello";
@@ -223,11 +232,75 @@ int main() {
     }
     std::cout << "Ternary " << ((10 > 5) ? "Operator\n" : "Broken\n");
 
-    // switch statement
-    // while loop
-    // do while loop
-    // for loop
-    // break / continue
+    // in c++, the switch expression cannot be a string (just an integer)
+    auto day = 4;
+    switch (day) {
+    case 1:
+        std::cout << "Monday" << std::endl;
+        break;
+    case 2:
+        std::cout << "Tuesday" << std::endl;
+        break;
+    case 3:
+        std::cout << "Wednesday" << std::endl;
+        break;
+    case 4:
+        std::cout << "Thursday" << std::endl;
+        break;
+    case 5:
+        std::cout << "Friday" << std::endl;
+        break;
+    case 6:
+        std::cout << "Saturday" << std::endl;
+        break;
+    case 7:
+        std::cout << "Sunday" << std::endl;
+        break;
+    default:
+        std::cerr << "Error: unknown day of the week" << std::endl;
+    }
+
+    // using constexpr function to get string hash int values at compile time
+    // (quasi constants)
+    switch (myStr2int("Jeff")) {
+    case myStr2int("Linda"):
+        std::cout << "Hi Linda" << std::endl;
+        break;
+    case myStr2int("Jeff"):
+        std::cout << "Hi Jeff" << std::endl;
+        break;
+    case myStr2int("Gary"):
+        std::cout << "Hi Gary" << std::endl;
+        break;
+    default:
+        std::cout << "Error: name unknown" << std::endl;
+    }
+
+    // exceptions - try, throw, catch, elipses(...),
+    try {
+        auto age = 15;
+        if (age >= 18) {
+            std::cout << "Welcome to the club" << std::endl;
+        } else {
+            // throw (int) 505;
+            // throw (short)505;
+            // throw std::runtime_error("runtime error");
+            throw "ff3... elipses... catch all...kf3l&*(d32378kj";
+        }
+    } catch (int num) {
+        std::cout << "Int: Access denied - too young" << std::endl;
+        std::cout << "Int: Error: " << num << std::endl;
+    } catch (short num) {
+        std::cout << "Short: Access denied - too young" << std::endl;
+        std::cout << "Short: Error: " << num << std::endl;
+    } catch (std::exception &e) {
+        std::cout << "Exception e: Access denied - too young" << std::endl;
+        std::cout << "Exception e: Error: " << e.what() << std::endl;
+    } catch (...) {
+        // elipses ... mean catch all
+        std::cout << "...: Access denied - too young" << std::endl;
+        std::cout << "...: Error: ..." << std::endl;
+    }
 
     // length of an array
     std::string cars[4] = {"Volvo", "BMW", "Ford", "Mazda"};
@@ -471,7 +544,7 @@ int main() {
 
     // write to file via output stream
     std::ofstream fhOut("zout.txt");
-    fhOut<< "1. Hi there\n2. How are you?\n3. Time to go, bye." << std::endl;
+    fhOut << "1. Hi there\n2. How are you?\n3. Time to go, bye." << std::endl;
     fhOut.close();
 
     // read from file via input stream and getline()
