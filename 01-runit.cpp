@@ -3,6 +3,7 @@
 #include <array>
 #include <cmath>
 #include <cstddef>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
@@ -178,7 +179,9 @@ void Motorbike::makeSound() { std::cout << this->getSound() << std::endl; }
 
 // function overloading
 void vehicleSoundPassByReference(Vehicle &vehicle) { vehicle.makeSound(); }
-void vehicleSoundPassByPointer(std::shared_ptr<Vehicle> vehicle) { vehicle->makeSound(); }
+void vehicleSoundPassByPointer(std::shared_ptr<Vehicle> vehicle) {
+    vehicle->makeSound();
+}
 
 int main() {
     // string type
@@ -466,6 +469,19 @@ int main() {
     vehicleSoundPassByReference(*ferrari);
     vehicleSoundPassByPointer(ferrari);
 
+    // write to file via output stream
+    std::ofstream fhOut("zout.txt");
+    fhOut<< "1. Hi there\n2. How are you?\n3. Time to go, bye." << std::endl;
+    fhOut.close();
+
+    // read from file via input stream and getline()
+    std::ifstream fhIn("zout.txt");
+    std::string myString;
+    // reading the file one line at a time
+    while (std::getline(fhIn, myString)) {
+        std::cout << myString;
+    }
+    fhOut.close();
 
     return 0;
 }
