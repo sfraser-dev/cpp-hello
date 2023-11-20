@@ -16,14 +16,19 @@
 #include <utility>
 #include <vector>
 
+// using all of namespace std is bad practice. selectively using what I need
+using std::cin;
+using std::cout;
+using std::endl;
+
 template <typename T>
 void printSmartUniquePtrArray(std::unique_ptr<T[]> theArray, int size,
                               int digitWidth) {
     for (std::size_t i = 0; i < size; i++) {
-        std::cout << std::setfill('0') << std::setw(digitWidth) << theArray[i]
-                  << " ";
+        cout << std::setfill('0') << std::setw(digitWidth) << theArray[i]
+             << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
 template <typename T>
@@ -32,30 +37,29 @@ void printSmartUniquePtrMatrix(
     int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
-            std::cout << std::setfill('0') << std::setw(digitWidth)
-                      << theMatrix[r][c] << " ";
+            cout << std::setfill('0') << std::setw(digitWidth)
+                 << theMatrix[r][c] << " ";
         }
-        std::cout << std::endl;
+        cout << endl;
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
 template <typename T> void printRawPtrArray(T *arr, int size, int digitWidth) {
     for (std::size_t i = 0; i < size; i++) {
-        std::cout << std::setfill('0') << std::setw(digitWidth) << arr[i]
-                  << " ";
+        cout << std::setfill('0') << std::setw(digitWidth) << arr[i] << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
 template <typename T>
 void printRawPtrMatrix(T **mat, int rows, int cols, int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
-            std::cout << std::setfill('0') << std::setw(digitWidth) << mat[r][c]
-                      << " ";
+            cout << std::setfill('0') << std::setw(digitWidth) << mat[r][c]
+                 << " ";
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 
@@ -64,12 +68,12 @@ void printVectorMatrix(std::vector<std::vector<T>> &vec, int rows, int cols,
                        int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
-            std::cout << std::setfill('0') << std::setw(digitWidth) << vec[r][c]
-                      << " ";
+            cout << std::setfill('0') << std::setw(digitWidth) << vec[r][c]
+                 << " ";
         }
-        std::cout << std::endl;
+        cout << endl;
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
 // reference to an arr passed as parameter (brackets needed or it would
@@ -78,9 +82,9 @@ void printVectorMatrix(std::vector<std::vector<T>> &vec, int rows, int cols,
 template <typename T, std::size_t S> void myRefArr(std::array<T, S> &arr) {
     for (std::size_t i = 0; i < S; i++) {
         arr[i] = pow(arr[i], 3);
-        std::cout << arr[i] << " ";
+        cout << arr[i] << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
 void myRefSwap(int &a, int &b) {
@@ -98,13 +102,13 @@ void myPtrSwap(int *a, int *b) {
 // recursion, build the stack and AFTERWARDS execute as clearing stack (code
 // blocks left on stack) N = 5 5 + Fn(4) 5 + 4 + Fn(3) 5 + 4 + 3 + Fn(2) 5 +
 // 4 + 3 + 2 + Fn(1) 5 + 4 + 3 + 2 + 1 + Fn(0) -> 0 + 1 + 2 + 3 + 4 + 5
-void recCountUpTo(int n) {     // init
-    if (n > 0) {               // check
-        recCountUpTo(n - 1);   // update and recursion ABOVE code block
-        std::cout << n << " "; // code block left on stack (LIFO), executed
-                               // as stack diminishes (pops)
+void recCountUpTo(int n) {   // init
+    if (n > 0) {             // check
+        recCountUpTo(n - 1); // update and recursion ABOVE code block
+        cout << n << " ";    // code block left on stack (LIFO), executed
+                             // as stack diminishes (pops)
     } else {
-        std::cout << "0 ";
+        cout << "0 ";
     }
 }
 
@@ -114,11 +118,10 @@ void recCountUpTo(int n) {     // init
 // recursion, execute up the stack (no code blocks on stack)
 void recCountDownFrom(int n) { // init
     if (n > 0) {               // check
-        std::cout << n
-                  << " "; // code block executed as stack builds up (pushes)
+        cout << n << " "; // code block executed as stack builds up (pushes)
         recCountDownFrom(n - 1); // update and recursion BELOW code block
     } else {
-        std::cout << "0 ";
+        cout << "0 ";
     }
 }
 
@@ -151,10 +154,9 @@ class Vehicle {
     auto setSound(std::string sound) { this->_sound = sound; }
 };
 void Vehicle::printInfo() {
-    std::cout << "Brand: " << this->getBrand()
-              << ", Model: " << this->getModel()
-              << ", Wheels: " << this->getWheels()
-              << ", Sound: " << this->getSound() << std::endl;
+    cout << "Brand: " << this->getBrand() << ", Model: " << this->getModel()
+         << ", Wheels: " << this->getWheels() << ", Sound: " << this->getSound()
+         << endl;
 }
 
 class Car : public Vehicle {
@@ -166,7 +168,7 @@ class Car : public Vehicle {
 
     void makeSound() override;
 };
-void Car::makeSound() { std::cout << this->getSound() << std::endl; }
+void Car::makeSound() { cout << this->getSound() << endl; }
 
 class Motorbike : public Vehicle {
   public:
@@ -177,7 +179,7 @@ class Motorbike : public Vehicle {
 
     void makeSound() override;
 };
-void Motorbike::makeSound() { std::cout << this->getSound() << std::endl; }
+void Motorbike::makeSound() { cout << this->getSound() << endl; }
 
 // function overloading
 void vehicleSoundPassByReference(Vehicle &vehicle) { vehicle.makeSound(); }
@@ -197,90 +199,109 @@ int main() {
     std::string myStr = "Hello";
     myStr += " ";
     myStr.append("World");
-    std::cout << myStr << std::endl;
-    std::cout << "The length of myStr is: " << myStr.length()
-              << "; and the size of myStr is: " << myStr.size() << std::endl;
+    cout << myStr << endl;
+    cout << "The length of myStr is: " << myStr.length()
+         << "; and the size of myStr is: " << myStr.size() << endl;
 
     // iterate through string
     for (std::size_t i = 0; i < myStr.length(); i++) {
-        std::cout << myStr[i] << " ";
+        cout << myStr[i] << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
     // change first character of string
     myStr[0] = 'J';
-    std::cout << myStr;
+    cout << myStr;
 
-    // get user input
-    std::string theName;
-    std::cout << std::endl << "Input your name: ";
+    // get user input string
+    std::string name;
+    cout << "Input your name: ";
     // cin>> considers whitespace terminating char, so use getline()
-    std::getline(std::cin, theName);
-    std::cout << "What's up " << theName << std::endl;
+    std::getline(cin, name);
+    cout << "What's up " << name << endl;
+
+    // get user input integer
+    // By default, C++ streams don't throw upon ill-formed input: it isn't
+    // exceptional that input is wrong. It is normal. The C++ approach to
+    // indicate input failure is to put the stream into failure state
+    int numIn; // integer input expected as writing to an int, cin knows this
+    cout << "Input an int: ";
+    cin >> numIn;
+    // cin failure template
+    while (cin.fail()) {
+        // clear cin as it's in failure state
+        cin.clear();
+        // ignore offending characters by ignoring everything
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        // attempt to get the user input again
+        cout << "Input an int: ";
+        cin >> numIn;
+    }
+    cout << "You input integer: " << endl;
 
     // math
-    std::cout << "sqrt(25) = " << sqrt(25) << std::endl;
-    std::cout << "round(2.6) = " << round(2.6) << std::endl;
+    cout << "sqrt(25) = " << sqrt(25) << endl;
+    cout << "round(2.6) = " << round(2.6) << endl;
 
     // if statement
     if (false) {
-        std::cout << "If: It's true I tell you!" << std::endl;
+        cout << "If: It's true I tell you!" << endl;
     } else if (false) {
-        std::cout << "Else If: It's true I tell you!" << std::endl;
+        cout << "Else If: It's true I tell you!" << endl;
     } else {
-        std::cout << "Else: What else can I tell you!" << std::endl;
+        cout << "Else: What else can I tell you!" << endl;
     }
-    std::cout << "Ternary " << ((10 > 5) ? "Operator\n" : "Broken\n");
+    cout << "Ternary " << ((10 > 5) ? "Operator\n" : "Broken\n");
 
     // in c++, the switch expression cannot be a string (just an integer)
     auto day = 4;
     switch (day) {
     case 1:
-        std::cout << "Monday" << std::endl;
+        cout << "Monday" << endl;
         break;
     case 2:
-        std::cout << "Tuesday" << std::endl;
+        cout << "Tuesday" << endl;
         break;
     case 3:
-        std::cout << "Wednesday" << std::endl;
+        cout << "Wednesday" << endl;
         break;
     case 4:
-        std::cout << "Thursday" << std::endl;
+        cout << "Thursday" << endl;
         break;
     case 5:
-        std::cout << "Friday" << std::endl;
+        cout << "Friday" << endl;
         break;
     case 6:
-        std::cout << "Saturday" << std::endl;
+        cout << "Saturday" << endl;
         break;
     case 7:
-        std::cout << "Sunday" << std::endl;
+        cout << "Sunday" << endl;
         break;
     default:
-        std::cerr << "Error: unknown day of the week" << std::endl;
+        std::cerr << "Error: unknown day of the week" << endl;
     }
 
     // using constexpr function to get string hash int values at compile time
     // (quasi constants)
     switch (myStr2int("Jeff")) {
     case myStr2int("Linda"):
-        std::cout << "Hi Linda" << std::endl;
+        cout << "Hi Linda" << endl;
         break;
     case myStr2int("Jeff"):
-        std::cout << "Hi Jeff" << std::endl;
+        cout << "Hi Jeff" << endl;
         break;
     case myStr2int("Gary"):
-        std::cout << "Hi Gary" << std::endl;
+        cout << "Hi Gary" << endl;
         break;
     default:
-        std::cout << "Error: name unknown" << std::endl;
+        cout << "Error: name unknown" << endl;
     }
 
     // exceptions - try, throw, catch, elipses(...),
     try {
         auto age = 15;
         if (age >= 18) {
-            std::cout << "Welcome to the club" << std::endl;
+            cout << "Welcome to the club" << endl;
         } else {
             // throw (int) 505;
             // throw (short)505;
@@ -288,61 +309,61 @@ int main() {
             throw "ff3... elipses... catch all...kf3l&*(d32378kj";
         }
     } catch (int num) {
-        std::cout << "Int: Access denied - too young" << std::endl;
-        std::cout << "Int: Error: " << num << std::endl;
+        cout << "Int: Access denied - too young" << endl;
+        cout << "Int: Error: " << num << endl;
     } catch (short num) {
-        std::cout << "Short: Access denied - too young" << std::endl;
-        std::cout << "Short: Error: " << num << std::endl;
+        cout << "Short: Access denied - too young" << endl;
+        cout << "Short: Error: " << num << endl;
     } catch (std::exception &e) {
-        std::cout << "Exception e: Access denied - too young" << std::endl;
-        std::cout << "Exception e: Error: " << e.what() << std::endl;
+        cout << "Exception e: Access denied - too young" << endl;
+        cout << "Exception e: Error: " << e.what() << endl;
     } catch (...) {
         // elipses ... mean catch all
-        std::cout << "...: Access denied - too young" << std::endl;
-        std::cout << "...: Error: ..." << std::endl;
+        cout << "...: Access denied - too young" << endl;
+        cout << "...: Error: ..." << endl;
     }
 
     // length of an array
     std::string cars[4] = {"Volvo", "BMW", "Ford", "Mazda"};
     for (std::size_t i = 0; i < sizeof(cars) / sizeof(std::string); i++) {
-        std::cout << cars[i] << " ";
+        cout << cars[i] << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
     // 1-d vector
     std::vector<int> myVec = {100, 200, 300, 400, 500};
     // foreach to loop ALL elements VALUES (not index) of an array, ranged
     // loop
     for (std::size_t i : myVec) {
-        std::cout << i << " ";
+        cout << i << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
     // // vector push()
     myVec.push_back(1001);
     // .at() is safer then just using "i", it'll throw exception rather than
     // return garbage
     for (std::size_t i = 0; i < myVec.size(); i++) {
-        std::cout << myVec.at(i) << " ";
+        cout << myVec.at(i) << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
     // vector pop()
     myVec.pop_back();
     myVec.pop_back();
     myVec.pop_back();
     for (std::size_t i : myVec) {
-        std::cout << i << " ";
+        cout << i << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
     // vector dynamically sized with each element initialised to zero
     auto theSize = 7;
     std::vector<int> myVec2(theSize, 0);
     for (std::size_t i : myVec2) {
-        std::cout << i << " ";
+        cout << i << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
     // vector iterator
     std::vector<int>::iterator intIter;
@@ -351,17 +372,17 @@ int main() {
     // best practice should be to use iterators on containers (but vectors
     // can use [])
     for (intIter = myVec2.begin(); intIter != myVec2.end(); intIter++) {
-        std::cout << *intIter << " ";
+        cout << *intIter << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
     // structs (array holds single type, struct holds multiple types)
     struct {
         int i = 101;
         std::string s = "one hundred and one";
     } myStruct101;
-    std::cout << "Struct int: " << myStruct101.i << "; struct string "
-              << myStruct101.s << std::endl;
+    cout << "Struct int: " << myStruct101.i << "; struct string "
+         << myStruct101.s << endl;
     // not allowed, it's not a struct named type: struct101 new101;
 
     // struct named type (and variable declared that uses the struct type)
@@ -369,8 +390,8 @@ int main() {
         int i = 202;
         std::string s = "two hundred and two";
     } myStruct202;
-    std::cout << "Struct int: " << myStruct202.i << "; struct string "
-              << myStruct202.s << std::endl;
+    cout << "Struct int: " << myStruct202.i << "; struct string "
+         << myStruct202.s << endl;
 
     // References and Pointers are important in C++, because they give you
     // the ability to manipulate the data in the computer's memory - which
@@ -381,33 +402,31 @@ int main() {
     // references (alias)
     auto a = 5;
     auto &b = a;
-    std::cout << "a = " << a << ", b = " << b << std::endl;
+    cout << "a = " << a << ", b = " << b << endl;
     a++;
-    std::cout << "a = " << a << ", b = " << b << std::endl;
+    cout << "a = " << a << ", b = " << b << endl;
 
     // raw pointers
     auto x = 303;
     auto *ptr = &x;
-    std::cout << "x = " << x << ", ptr = " << ptr << ", *ptr = " << *ptr
-              << std::endl;
+    cout << "x = " << x << ", ptr = " << ptr << ", *ptr = " << *ptr << endl;
     (*ptr) += 7;
-    std::cout << "x = " << x << ", ptr = " << ptr << ", *ptr = " << *ptr
-              << std::endl;
+    cout << "x = " << x << ", ptr = " << ptr << ", *ptr = " << *ptr << endl;
 
     // pass references to function
     auto first = 100;
     auto second = 200;
-    std::cout << "first = " << first << ", second = " << second << std::endl;
-    std::cout << "swapping..." << std::endl;
+    cout << "first = " << first << ", second = " << second << endl;
+    cout << "swapping..." << endl;
     myRefSwap(first, second);
-    std::cout << "first = " << first << ", second = " << second << std::endl;
+    cout << "first = " << first << ", second = " << second << endl;
     // pass pointers to function
     auto third = 300;
     auto fourth = 400;
-    std::cout << "third = " << third << ", fourth = " << fourth << std::endl;
-    std::cout << "swapping..." << std::endl;
+    cout << "third = " << third << ", fourth = " << fourth << endl;
+    cout << "swapping..." << endl;
     myPtrSwap(&third, &fourth);
-    std::cout << "third = " << third << ", fourth = " << fourth << std::endl;
+    cout << "third = " << third << ", fourth = " << fourth << endl;
 
     // raw dynamic 2-d array (matrix)
     auto rows = 3;
@@ -511,9 +530,9 @@ int main() {
 
     // recursion
     recCountUpTo(5);
-    std::cout << std::endl;
+    cout << endl;
     recCountDownFrom(5);
-    std::cout << std::endl;
+    cout << endl;
 
     // honda is a Car instance on the main function's stack
     Car honda("Honda", "Civic", "beep beep honda");
@@ -544,7 +563,7 @@ int main() {
 
     // write to file via output stream
     std::ofstream fhOut("zout.txt");
-    fhOut << "1. Hi there\n2. How are you?\n3. Time to go, bye." << std::endl;
+    fhOut << "1. Hi there\n2. How are you?\n3. Time to go, bye." << endl;
     fhOut.close();
 
     // read from file via input stream and getline()
@@ -552,7 +571,7 @@ int main() {
     std::string myString;
     // reading the file one line at a time
     while (std::getline(fhIn, myString)) {
-        std::cout << myString;
+        cout << myString;
     }
     fhOut.close();
 
