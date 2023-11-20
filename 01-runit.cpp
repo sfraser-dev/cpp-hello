@@ -124,10 +124,11 @@ class Vehicle {
     std::string _brand;
     std::string _model;
     short _wheels;
+    std::string _sound;
 
   public:
     Vehicle(std::string brand, std::string model, int wheels, std::string sound)
-        : _brand(brand), _model(model), _wheels(wheels)  {}
+        : _brand(brand), _model(model), _wheels(wheels), _sound(sound) {}
 
     ~Vehicle() {}
 
@@ -140,14 +141,17 @@ class Vehicle {
     auto getBrand() { return this->_brand; }
     auto getModel() { return this->_model; }
     auto getWheels() { return this->_wheels; }
+    auto getSound() { return this->_sound; }
     auto setBrand(std::string brand) { this->_brand = brand; }
     auto setModel(std::string model) { this->_model = model; }
     auto setWheels(short wheels) { this->_wheels = wheels; }
+    auto setSound(std::string sound) { this->_sound = sound; }
 };
 void Vehicle::printInfo() {
     std::cout << "Brand: " << this->getBrand()
               << ", Model: " << this->getModel()
-              << ", Wheels: " << this->getWheels() << std::endl;
+              << ", Wheels: " << this->getWheels()
+              << ", Sound: " << this->getSound() << std::endl;
 }
 
 class Car : public Vehicle {
@@ -159,7 +163,7 @@ class Car : public Vehicle {
 
     void makeSound() override;
 };
-void Car::makeSound() { std::cout << "beep beep" << std::endl; }
+void Car::makeSound() { std::cout << this->getSound() << std::endl; }
 
 class Motorbike : public Vehicle {
   public:
@@ -170,9 +174,11 @@ class Motorbike : public Vehicle {
 
     void makeSound() override;
 };
-void Motorbike::makeSound() { std::cout << "vroom vroom" << std::endl; }
+void Motorbike::makeSound() { std::cout << this->getSound() << std::endl; }
 
-void vehicleSound(Vehicle* v) { v->makeSound(); }
+// function overloading
+void vehicleSoundPassByReference(Vehicle &vehicle) { vehicle.makeSound(); }
+void vehicleSoundPassByPointer(std::shared_ptr<Vehicle> vehicle) { vehicle->makeSound(); }
 
 int main() {
     // string type
@@ -433,18 +439,33 @@ int main() {
     recCountDownFrom(5);
     std::cout << std::endl;
 
-    // classes
-    Car car("Honda", "Civic", "car beep beep");
-    car.printInfo();
-    car.setBrand("Ford");
-    car.setModel("Focus");
-    car.printInfo();
-    Motorbike motorbike("Harley", "Fat Boy", "vroom vroom");
-    motorbike.printInfo();
+    // honda is a Car instance on the main function's stack
+    Car honda("Honda", "Civic", "beep beep honda");
+    honda.printInfo();
+    // harley is a Motorbike instance on the main function's stack
+    Motorbike harley("Harley", "Fat Boy", "vroom vroom harley");
+    harley.printInfo();
 
-    // polymorphism
-    vehicleSound(&car);
-    vehicleSound(&motorbike);
+    // polymorphism, different sub-types behave differently
+    // argument to function is a reference (alias) to a Vehicle type
+    vehicleSoundPassByReference(honda);  // honda is a Vehicle (Car)
+    vehicleSoundPassByReference(harley); // harley is a Vehicle (Motorbike)
+
+    // polymorphism with shared smart pointers
+    // argument to function is a shared smart pointer of type Vehicle
+    std::shared_ptr<Car> voltswagon(std::make_shared<Car>(
+        "Voltswagon", "Golf", "smart pointer shared: beep beep voltswagon"));
+    vehicleSoundPassByPointer((voltswagon));
+    std::shared_ptr<Motorbike> suzuki(std::make_shared<Motorbike>(
+        "Suzuki", "GSX-S1000", "smart pointer shared: vroom vroom suzuki"));
+    vehicleSoundPassByPointer((suzuki));
+
+    // smart pointer ferrari should be used syntaxically just like a raw pointer
+    std::shared_ptr<Car> ferrari(std::make_shared<Car>(
+        "Ferrari", "F40", "smart pointer shared: beep beep ferrari"));
+    vehicleSoundPassByReference(*ferrari);
+    vehicleSoundPassByPointer(ferrari);
+
 
     return 0;
 }
