@@ -142,7 +142,8 @@ class Vehicle {
     Vehicle(std::string brand, std::string model, int wheels, std::string sound)
         : _brand(brand), _model(model), _wheels(wheels), _sound(sound) {}
 
-    ~Vehicle() {}
+    // Vehicle is an abstract class so need an virtual destructor
+    virtual ~Vehicle() = 0;
 
     // pure virtual function makes this Vehicle class abstract
     virtual void makeSound() = 0;
@@ -164,6 +165,8 @@ void Vehicle::printInfo() {
          << ", Wheels: " << this->getWheels() << ", Sound: " << this->getSound()
          << endl;
 }
+// virtual destructor definition
+Vehicle::~Vehicle() {}
 
 class Car : public Vehicle {
   public:
