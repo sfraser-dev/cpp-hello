@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <exception>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -18,13 +19,13 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#include <filesystem>
 
-// using all of namespace std is bad practice. selectively using what I need
+
+// using all of namespace std is bad practice. qualifying exactly what I'm using
+using std::cerr;
 using std::cin;
 using std::cout;
 using std::endl;
-using std::cerr;
 using std::perror;
 
 template <typename T>
@@ -229,6 +230,14 @@ int main() {
     std::getline(cin, name);
     cout << "What's up " << name << endl;
 
+    // taking advantage of cin considering whitespace as terminating character
+    int yy, zz;
+    cout << "Input two ints separeted by whitespace: ";
+    cin >> yy >> zz;
+    cout << "you typed " << yy << " and " << zz << endl;
+    // system("pause") only works on windows
+    std::system("pause");
+
     // get user input integer
     // By default, C++ streams don't throw upon ill-formed input: it isn't
     // exceptional that input is wrong. It is normal. The C++ approach to
@@ -243,7 +252,7 @@ int main() {
         // ignore offending characters by ignoring everything
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         // attempt to get the user input again
-        cout << "Input an int: ";
+        cout << "That's not an int, please try again: ";
         cin >> numIn;
     }
     cout << "You input integer: " << endl;
@@ -315,9 +324,6 @@ int main() {
     cout << "pp = " << pp << ", pp_ptr = " << pp_ptr
          << ", *pp_ptr = " << *pp_ptr << endl;
     std::getline(cin, name);
-    cout << "hit any key: ";
-    cin >> pp;
-
     // exceptions - try, throw, catch, elipses(...),
     try {
         auto age = 15;
