@@ -1,5 +1,4 @@
 #include <iostream>
-using namespace std;
 
 // https://coderslegacy.com/c/check-cpp-compiler-version/
 

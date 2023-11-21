@@ -1,8 +1,11 @@
 // w3schools C++ tutorial
 #include <algorithm>
 #include <array>
+#include <assert.h>
 #include <cmath>
 #include <cstddef>
+#include <cstdio>
+#include <cstdlib>
 #include <exception>
 #include <fstream>
 #include <iomanip>
@@ -15,11 +18,14 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+#include <filesystem>
 
 // using all of namespace std is bad practice. selectively using what I need
 using std::cin;
 using std::cout;
 using std::endl;
+using std::cerr;
+using std::perror;
 
 template <typename T>
 void printSmartUniquePtrArray(std::unique_ptr<T[]> theArray, int size,
@@ -211,7 +217,7 @@ int main() {
 
     // change first character of string
     myStr[0] = 'J';
-    cout << myStr;
+    cout << myStr << endl;
 
     // get user input string
     std::string name;
@@ -254,7 +260,7 @@ int main() {
     cout << "Ternary " << ((10 > 5) ? "Operator\n" : "Broken\n");
 
     // in c++, the switch expression cannot be a string (just an integer)
-    auto day = 4;
+    auto day = 9;
     switch (day) {
     case 1:
         cout << "Monday" << endl;
@@ -278,7 +284,7 @@ int main() {
         cout << "Sunday" << endl;
         break;
     default:
-        std::cerr << "Error: unknown day of the week" << endl;
+        cerr << "Warning: unknown day of the week" << endl;
     }
 
     // using constexpr function to get string hash int values at compile time
@@ -296,6 +302,18 @@ int main() {
     default:
         cout << "Error: name unknown" << endl;
     }
+
+    // assert for debugging, often used instead of expensive exeptions
+    auto pp = 5;
+    auto *pp_ptr = &pp;
+    // proceed if true (switch off / remove asserts via #define NDEBUG for
+    // Release)
+    assert(pp_ptr != NULL);
+    cout << "pp = " << pp << ", pp_ptr = " << pp_ptr
+         << ", *pp_ptr = " << *pp_ptr << endl;
+    std::getline(cin, name);
+    cout << "hit any key: ";
+    cin >> pp;
 
     // exceptions - try, throw, catch, elipses(...),
     try {
@@ -571,9 +589,17 @@ int main() {
     std::string myString;
     // reading the file one line at a time
     while (std::getline(fhIn, myString)) {
-        cout << myString;
+        cout << myString << endl;
     }
-    fhOut.close();
+    fhIn.close();
+    // delete file
+    std::system("del /F zout.txt");
+    // attempt to open deleted file to check its existance
+    std::ifstream fileOpened("zout.txt");
+    if (fileOpened.good()) {
+        perror("Failed to delete zout.txt");
+        return EXIT_FAILURE;
+    }
 
     return 0;
 }

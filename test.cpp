@@ -6,6 +6,6 @@ extern std::string name;
 
 int main() {
     greetings(name);
-    std::cout << "Fit like from test-main.cpp";
+    std::cout << "Hi from test-main.cpp";
     return 0;
 }
