@@ -1,16 +1,14 @@
 #include <algorithm>
 #include <iostream>
+#include <ostream>
 #include <string>
+#include "hello2.h"
 
 using std::cout;
 using std::endl;
 
-std::string myStringRev(std::string);
-unsigned long long my_factorial(int);
-int sum_from_0_to_n(int);
-int sum_of_digits(int);
-double a_penny_doubled_everyday(int);
-void ptr_add_one (short*);
+
+class Vehicle2;
 
 int main() {
     // range based for loop
@@ -61,7 +59,7 @@ int main() {
         // Print characters in descending order
         // issue in the descending order loop where unsigned integer
         // (std::size_t) used for the for the loop variable j, and it
-        // becomes problematic when j reaches 0. 
+        // becomes problematic when j reaches 0.
         for (int j = i - 1; j >= 0; --j) {
             cout << input[j];
         }
@@ -74,30 +72,137 @@ int main() {
     cout << "my_factorial(12) = " << my_factorial(12) << endl;
     cout << "sum_of_digits(101) = " << sum_of_digits(101) << endl;
     cout << "sum_from_0_to_n(6) = " << sum_from_0_to_n(6) << endl;
-    cout << "a_penny_doubled_everyday(18) = " << a_penny_doubled_everyday(18) << endl;
+    cout << "a_penny_doubled_everyday(18) = " << a_penny_doubled_everyday(18)
+         << endl;
     cout << endl;
 
     // pointers!
-    short sh {1};
-    short *sh_ptr {&sh};
-    cout << "*sh_ptr = " << ++*sh_ptr << endl;
+    short sh{1};
+    short *sh_ptr{&sh};
+    cout << "*sh_ptr = " << *sh_ptr << endl;
     ptr_add_one(sh_ptr);
-    cout << "*sh_ptr = " << ++*sh_ptr << endl;
+    cout << "*sh_ptr = " << *sh_ptr << endl;
+    ref_add_one(*sh_ptr);
+    cout << "*sh_ptr = " << *sh_ptr << endl;
     sh_ptr = nullptr;
+    // pointers on the heap
+    int *heap1_ptr{new int};
+    *heap1_ptr = 101;
+    cout << "heap1_ptr = " << heap1_ptr << endl;
+    cout << "*heap1_ptr = " << *heap1_ptr << endl;
+    delete heap1_ptr;
+    heap1_ptr = nullptr;
+    // pointer arithmetic
+    short *sharr = new short[]{1, 2, 3, 4, 5};
+    // cannot use range based for loop with dynamically allocated arrays (use
+    // vectors!)
+    for (short i = 0; i < 5; i++) {
+        cout << sharr[i] << " ";
+    }
+    cout << endl;
+    // pointer subscript notation
+    sharr[0] = 11;
+    sharr[1] = 22;
+    sharr[2] = 33;
+    sharr[3] = 44;
+    sharr[4] = 55;
+    for (short i = 0; i < 5; i++) {
+        cout << sharr[i] << " ";
+    }
+    cout << endl;
+    // pointer offset notation, compiler knows array type will increment
+    // appropriately to next element
+    // nb: pointer subscript and pointer offset are equivalent
+    *(sharr + 0) = 101;
+    *(sharr + 1) = 102;
+    *(sharr + 2) = 103;
+    *(sharr + 3) = 104;
+    *(sharr + 4) = 105;
+    for (short i = 0; i < 5; i++) {
+        cout << sharr[i] << " ";
+    }
+    cout << endl;
+    delete[] sharr;
+    sharr = nullptr;
 
+    // create new array on the heap from a function
+    short *funheap = fun_heap_alloc();
+    for (int i = 0; i < 5; i++) {
+        cout << funheap[i] << " ";
+    }
+    cout << endl;
+    delete[] funheap;
+    funheap = nullptr;
+
+    // reverse string in a function
+    std::string instring = "String Bling Wing Fling";
+    std::string outstring = reverse_string1(instring);
+    cout << "instring = " << instring << endl;
+    cout << "outstring = " << outstring << endl;
+    outstring = reverse_string2(outstring);
+    cout << "outstring = " << outstring << endl;
+    cout << endl;
+
+    // reference in ranged for loop
+    std::string strarr[] = {"Homer", "Lisa", "Marge"};
+    // const ref when reading
+    for (auto const &el : strarr) {
+        cout << el << " ";
+    }
+    cout << endl;
+    // just ref when changing permanently
+    for (auto &el : strarr) {
+        if (el == "Homer") {
+            el = "D'oh";
+        }
+        cout << el << " ";
+    }
+    cout << endl;
+
+    // delegated constructors
+    Vehicle2 veh;
+    veh.printInfo();
 
     return 0;
 }
 
-void ptr_add_one (short *n){
-    (*n)++;
+void Vehicle2::printInfo() {
+    cout << "Brand: " << this->getBrand() << ", Model: " << this->getModel()
+         << ", Wheels: " << this->getWheels() << ", Sound: " << this->getSound()
+         << endl;
 }
 
+std::string reverse_string1(const std::string &str) {
+    std::string reversed;
+    reversed = str;
+    short len = str.length();
+    int j = len - 1;
+    for (std::size_t i = 0; i < len; i++) {
+        reversed.at(j--) = str.at(i);
+    }
+    return reversed;
+}
+
+std::string reverse_string2(const std::string &str) {
+    std::string reversed;
+    reversed = str;
+    reverse(reversed.begin(), reversed.end());
+    return reversed;
+}
+
+short *fun_heap_alloc() {
+    short *ptr{new short[]{100, 101, 102, 103, 104}};
+    return ptr;
+}
+
+void ptr_add_one(short *n) { (*n)++; }
+void ref_add_one(short &n) { n++; }
+
 double a_penny_doubled_everyday(int n) {
-    if (n==1) {
+    if (n == 1) {
         return 0.01f;
     }
-    return 2*a_penny_doubled_everyday(n-1);
+    return 2 * a_penny_doubled_everyday(n - 1);
 }
 
 int sum_of_digits(int n) { // 123=6, 1234=10, 101=2
