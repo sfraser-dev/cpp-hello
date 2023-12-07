@@ -10,6 +10,7 @@ unsigned long long my_factorial(int);
 int sum_from_0_to_n(int);
 int sum_of_digits(int);
 double a_penny_doubled_everyday(int);
+void ptr_add_one (short*);
 
 int main() {
     // range based for loop
@@ -78,13 +79,18 @@ int main() {
 
     // pointers!
     short sh {1};
-    short *sh_ptr {nullptr};
-    sh_ptr = &sh;
+    short *sh_ptr {&sh};
+    cout << "*sh_ptr = " << ++*sh_ptr << endl;
+    ptr_add_one(sh_ptr);
     cout << "*sh_ptr = " << ++*sh_ptr << endl;
     sh_ptr = nullptr;
 
 
     return 0;
+}
+
+void ptr_add_one (short *n){
+    (*n)++;
 }
 
 double a_penny_doubled_everyday(int n) {
