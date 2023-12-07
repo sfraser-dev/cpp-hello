@@ -2,24 +2,29 @@
 #include <algorithm>
 #include <array>
 #include <assert.h>
+#include <cctype>
+#include <cfloat>
+#include <climits>
 #include <cmath>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
+#include <ctype.h>
 #include <exception>
 #include <filesystem>
 #include <fstream>
-#include <iomanip>
+#include <iomanip> //setw setfill setprecision
 #include <iostream>
 #include <iterator>
+#include <limits.h>
 #include <memory>
 #include <ostream>
 #include <stdexcept>
+#include <stdint.h>
 #include <string>
 #include <type_traits>
 #include <utility>
 #include <vector>
-
 
 // using all of namespace std is bad practice. qualifying exactly what I'm using
 using std::cerr;
@@ -28,22 +33,26 @@ using std::cout;
 using std::endl;
 using std::perror;
 
+// print an array pointed to by a smart unique pointer
 template <typename T>
 void printSmartUniquePtrArray(std::unique_ptr<T[]> theArray, int size,
                               int digitWidth) {
     for (std::size_t i = 0; i < size; i++) {
+        // formatting the output nicely
         cout << std::setfill('0') << std::setw(digitWidth) << theArray[i]
              << " ";
     }
     cout << endl;
 }
 
+// print a matrix pointed to by smart unique pointers
 template <typename T>
 void printSmartUniquePtrMatrix(
     std::unique_ptr<std::unique_ptr<T[]>[]> theMatrix, int rows, int cols,
     int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
+            // formatting the output nicely
             cout << std::setfill('0') << std::setw(digitWidth)
                  << theMatrix[r][c] << " ";
         }
@@ -52,17 +61,21 @@ void printSmartUniquePtrMatrix(
     cout << endl;
 }
 
+// old style: print array pointed to by a raw pointer
 template <typename T> void printRawPtrArray(T *arr, int size, int digitWidth) {
     for (std::size_t i = 0; i < size; i++) {
+        // formatting the output nicely
         cout << std::setfill('0') << std::setw(digitWidth) << arr[i] << " ";
     }
     cout << endl;
 }
 
+// old style: print matrix pointed to by raw pointers
 template <typename T>
 void printRawPtrMatrix(T **mat, int rows, int cols, int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
+            // formatting the output nicely
             cout << std::setfill('0') << std::setw(digitWidth) << mat[r][c]
                  << " ";
         }
@@ -70,11 +83,13 @@ void printRawPtrMatrix(T **mat, int rows, int cols, int digitWidth) {
     }
 }
 
+// print a matrix made up of std::vectors
 template <typename T>
 void printVectorMatrix(std::vector<std::vector<T>> &vec, int rows, int cols,
                        int digitWidth) {
     for (std::size_t r = 0; r < rows; r++) {
         for (std::size_t c = 0; c < cols; c++) {
+            // formatting the output nicely
             cout << std::setfill('0') << std::setw(digitWidth) << vec[r][c]
                  << " ";
         }
@@ -94,12 +109,14 @@ template <typename T, std::size_t S> void myRefArr(std::array<T, S> &arr) {
     cout << endl;
 }
 
+// swap using references
 void myRefSwap(int &a, int &b) {
     auto temp = a;
     a = b;
     b = temp;
 }
 
+// swap using pointers
 void myPtrSwap(int *a, int *b) {
     auto temp = *a;
     *a = *b;
@@ -107,8 +124,13 @@ void myPtrSwap(int *a, int *b) {
 }
 
 // recursion, build the stack and AFTERWARDS execute as clearing stack (code
-// blocks left on stack) N = 5 5 + Fn(4) 5 + 4 + Fn(3) 5 + 4 + 3 + Fn(2) 5 +
-// 4 + 3 + 2 + Fn(1) 5 + 4 + 3 + 2 + 1 + Fn(0) -> 0 + 1 + 2 + 3 + 4 + 5
+// blocks left on stack)
+// N = 5
+// 5 + Fn(4)
+// 5 + 4 + Fn(3)
+// 5 + 4 + 3 + Fn(2)
+// 5 + 4 + 3 + 2 + Fn(1)
+// 5 + 4 + 3 + 2 + 1 + Fn(0) -> code block execute -> 0 + 1 + 2 + 3 + 4 + 5
 void recCountUpTo(int n) {   // init
     if (n > 0) {             // check
         recCountUpTo(n - 1); // update and recursion ABOVE code block
@@ -119,7 +141,12 @@ void recCountUpTo(int n) {   // init
     }
 }
 
-//
+// code block executed -> 5
+// code block executed -> 4
+// code block executed -> 3
+// code block executed -> 2
+// code block executed -> 1
+// code block executed -> 0 -> all blocks executed -> done
 // comparison with for loop: init, check and update
 // for (int i = n; i > 0; i--) { code block; }
 // recursion, execute up the stack (no code blocks on stack)
@@ -176,6 +203,7 @@ class Car : public Vehicle {
         : Vehicle(brand, model, 4, sound) {}
     ~Car() {}
 
+    // overriding function from parent class
     void makeSound() override;
 };
 void Car::makeSound() { cout << this->getSound() << endl; }
@@ -187,11 +215,12 @@ class Motorbike : public Vehicle {
         : Vehicle(brand, model, 2, sound) {}
     ~Motorbike() {}
 
+    // overriding function from parent class
     void makeSound() override;
 };
 void Motorbike::makeSound() { cout << this->getSound() << endl; }
 
-// function overloading
+// function overloading (take Vehicles, so Car and Motorbikes valid)
 void vehicleSoundPassByReference(Vehicle &vehicle) { vehicle.makeSound(); }
 void vehicleSoundPassByPointer(std::shared_ptr<Vehicle> vehicle) {
     vehicle->makeSound();
@@ -199,10 +228,12 @@ void vehicleSoundPassByPointer(std::shared_ptr<Vehicle> vehicle) {
 
 // hashing a string to an int via a consexpr recursive function
 // so can use string expressions in c++ switch
-// constexp functions are evaluated at compile time, ie: calcualted constants
+// constexpr functions are evaluated at compile time, ie: calcualted constants
+// use constexpr instead of macros
 constexpr unsigned int myStr2int(const char *str, int h = 0) {
     return !str[h] ? 5381 : (myStr2int(str, h + 1) * 33) ^ str[h];
 }
+constexpr long myVal() { return LONG_MAX / 10; }
 
 int main() {
     // string type
@@ -210,6 +241,7 @@ int main() {
     myStr += " ";
     myStr.append("World");
     cout << myStr << endl;
+    // string and length are exactly the same (both exist for easy of use)
     cout << "The length of myStr is: " << myStr.length()
          << "; and the size of myStr is: " << myStr.size() << endl;
 
@@ -231,10 +263,10 @@ int main() {
     cout << "What's up " << name << endl;
 
     // taking advantage of cin considering whitespace as terminating character
-    int yy, zz;
+    int yyy, zzz;
     cout << "Input two ints separeted by whitespace: ";
-    cin >> yy >> zz;
-    cout << "you typed " << yy << " and " << zz << endl;
+    cin >> yyy >> zzz;
+    cout << "you typed " << yyy << " and " << zzz << endl;
     // system("pause") only works on windows
     std::system("pause");
 
@@ -260,6 +292,16 @@ int main() {
     // math
     cout << "sqrt(25) = " << sqrt(25) << endl;
     cout << "round(2.6) = " << round(2.6) << endl;
+
+    // four main different ways of initializing (plus overlaps)
+    int w = 1;
+    int x(2);
+    int y{3};
+    auto z = 4;
+    auto xx(22);
+    auto yy{33};
+    cout << "w=" << w << ", x=" << x << ", y=" << y << ", z=" << z
+         << ", xx=" << xx << ", yy=" << yy << endl;
 
     // if statement
     if (false) {
@@ -366,10 +408,10 @@ int main() {
     }
     cout << endl;
 
-    // // vector push()
+    // vector push()
     myVec.push_back(1001);
     // .at() is safer then just using "i", it'll throw exception rather than
-    // return garbage
+    // return garbage. Using [] with vectors has no bounds checking
     for (std::size_t i = 0; i < myVec.size(); i++) {
         cout << myVec.at(i) << " ";
     }
@@ -410,7 +452,7 @@ int main() {
     } myStruct101;
     cout << "Struct int: " << myStruct101.i << "; struct string "
          << myStruct101.s << endl;
-    // not allowed, it's not a struct named type: struct101 new101;
+    // struct101 new101; not allowed, it's not a struct named type
 
     // struct named type (and variable declared that uses the struct type)
     struct myStructDataType {
@@ -419,6 +461,9 @@ int main() {
     } myStruct202;
     cout << "Struct int: " << myStruct202.i << "; struct string "
          << myStruct202.s << endl;
+    myStructDataType newStruct202;
+    cout << "Struct int: " << newStruct202.i << "; struct string "
+         << newStruct202.s << endl;
 
     // References and Pointers are important in C++, because they give you
     // the ability to manipulate the data in the computer's memory - which
@@ -426,19 +471,24 @@ int main() {
     // are one of the things that make C++ stand out from other programming
     // languages, like Python and Java.
 
-    // references (alias)
+    // references (alias). a reference IS the object. must be initialized,
+    // cannot be reassigned, cannot be null. a little bit like a const pointer.
+    // cleaner code, auto dereferencing, safer to use.
     auto a = 5;
     auto &b = a;
     cout << "a = " << a << ", b = " << b << endl;
     a++;
     cout << "a = " << a << ", b = " << b << endl;
 
-    // raw pointers
-    auto x = 303;
-    auto *ptr = &x;
-    cout << "x = " << x << ", ptr = " << ptr << ", *ptr = " << *ptr << endl;
+    // raw pointers. pointers have their own identiy. don't need to be
+    // initialised, can be reassigned, can be null.
+    auto xxxx = 303;
+    auto *ptr = &xxxx;
+    cout << "xxxx = " << xxxx << ", ptr = " << ptr << ", *ptr = " << *ptr
+         << endl;
     (*ptr) += 7;
-    cout << "x = " << x << ", ptr = " << ptr << ", *ptr = " << *ptr << endl;
+    cout << "xxxx = " << xxxx << ", ptr = " << ptr << ", *ptr = " << *ptr
+         << endl;
 
     // pass references to function
     auto first = 100;
@@ -475,7 +525,7 @@ int main() {
     }
     printRawPtrMatrix<int>(myMatrix, rows, cols, 2);
     // clean up. for each new used need a delete. for each new[] used need a
-    // delete[] C style dumb pointer
+    // delete[]
     delete[] myMatrix[0];
     myArray = 0;
     delete[] myMatrix;
@@ -487,9 +537,12 @@ int main() {
 
     // "new" array created on the heap and then passed to a smart pointer's
     // constructor. works, but best not to use new (nor delete) at all in
-    // modern C++ raw pointer creation was: int *myArray = new int[rows *
-    // cols];
+    // modern C++
     // std::unique_ptr<int[]> myArraySmart(new int[rows * cols]);
+    // for comparison, raw pointer creation was:
+    // int *myArray = new int[rows * cols];
+    // modern C++: stl: vector, string
+    // modern C++ uses vectors, not arrays
 
     // smart pointer (unique) to array
     std::unique_ptr<int[]> myArraySmart(std::make_unique<int[]>(rows * cols));
@@ -502,8 +555,8 @@ int main() {
     std::unique_ptr<std::unique_ptr<int[]>[]> smartPtr2D;
     std::unique_ptr<int[]> smartPtr1D;
     traverse = 0;
-    // create an array of unique pointers that point to integers
-    // these will point to the "row starts"
+    // create an array of unique pointers that each point to the start
+    // of a smart pointer array of ints - these will be the "row starts"
     smartPtr2D = std::make_unique<std::unique_ptr<int[]>[]>(rows);
     for (std::size_t i = 0; i < rows; i++) {
         // create a unique pointer that points to an array of integers
@@ -512,7 +565,7 @@ int main() {
         for (std::size_t j = 0; j < cols; j++) {
             smartPtr1D[j] = traverse++;
         }
-        // move / copy the pointer from this "row" X to the 2d array at
+        // move the pointer from this "row" X to the 2d array at
         // position X the "2d" array (really 1d) will now contain at its
         // index X a pointer to elements from "row" X thus giving a "2d"
         // representation of the data
@@ -573,7 +626,7 @@ int main() {
     vehicleSoundPassByReference(honda);  // honda is a Vehicle (Car)
     vehicleSoundPassByReference(harley); // harley is a Vehicle (Motorbike)
 
-    // polymorphism with shared smart pointers
+    // polymorphism with SHARED smart pointers
     // argument to function is a shared smart pointer of type Vehicle
     std::shared_ptr<Car> voltswagon(std::make_shared<Car>(
         "Voltswagon", "Golf", "smart pointer shared: beep beep voltswagon"));
@@ -610,5 +663,85 @@ int main() {
         return EXIT_FAILURE;
     }
 
+    // climits / cfloat / sizeof (type)
+    cout << "size of char is " << sizeof(char) << " bytes" << endl;
+    cout << "size of short is " << sizeof(short) << " bytes" << endl;
+    cout << "size of int is " << sizeof(int) << " bytes" << endl;
+    cout << "size of unsigned int is " << sizeof(unsigned int) << " bytes"
+         << endl;
+    cout << "size of long is " << sizeof(long) << " bytes" << endl;
+    cout << "size of long long is " << sizeof(long long) << " bytes" << endl;
+    cout << "size of float is " << sizeof(float) << " bytes" << endl;
+    cout << "size of double is " << sizeof(double) << " bytes" << endl;
+    cout << "size of long double is " << sizeof(long double) << " bytes"
+         << endl;
+
+    // macros for sizes
+    cout << "size of CHAR_MAX is " << CHAR_MAX << endl;
+    cout << "size of INT16_MAX is " << INT16_MAX << endl;
+    cout << "size of INT32_MAX is " << INT32_MAX << endl;
+    cout << "size of INT64_MAX is " << INT64_MAX << endl;
+    cout << "size of SHRT_MAX is " << SHRT_MAX << endl;
+    cout << "size of LONG_MAX is " << LONG_MAX << endl;
+    cout << "size of LLONG_MAX is " << LLONG_MAX << endl;
+
+    // constants (const, preprocessor, enum, constexpr)
+    const int myConst = 12; // const
+    cout << "myConst = " << myConst << endl;
+    enum year { jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec };
+#define MYCONST 12          // preprocessor macro constant
+    cout << "MYCONST preprocessor = " << MYCONST << endl;
+    for (std::size_t i = jan; i <= dec; i++) {
+        cout << "i = " << i << endl;
+    }
+    long myval = myVal(); // constexpr
+    cout << "constexpr: LONG_MAX = " << LONG_MAX << ", myval = " << myval
+         << endl;
+
+    // arrays
+    int test_scores0[5];               // junk
+    int test_scores1[]{1, 2, 3, 4, 5}; // array size 5 {1,2,3,4,5}
+    int test_scores2[5]{1, 2};         // array size 5 {1,2,0,0,0}
+    const int myfive{5};
+    int test_scores3[myfive]{0}; // array size 5 {0,0,0,0,0}
+    cout << "test_scores0: (junk)" << endl;
+    for (std::size_t i = 0; i < 5; i++) {
+        cout << test_scores0[i] << " ";
+    }
+    cout << endl;
+    cout << "test_scores1:" << endl;
+    for (std::size_t i = 0; i < 5; i++) {
+        cout << test_scores1[i] << " ";
+    }
+    cout << endl;
+    cout << "test_scores2:" << endl;
+    for (std::size_t i = 0; i < 5; i++) {
+        cout << test_scores2[i] << " ";
+    }
+    cout << endl;
+    cout << "test_scores3:" << endl;
+    // range based for loop
+    for (std::size_t elem : test_scores3) {
+        cout << elem << " ";
+    }
+    cout << endl;
+
+    // range based for loop
+    for (char ch : "This is a test") {
+        if (ch == ' ') {
+            cout << "\t";
+        } else {
+            cout << (char)toupper(ch);
+        }
+    }
+    cout << endl;
+
+    std::string mystr1 = "This is a test";
+    cout << mystr1.substr(0, 4) << endl;
+    std::string mystr2 = mystr1;
+    reverse(mystr1.begin(), mystr1.end());
+    cout << mystr1 << endl;
+    cout << mystr2 << endl;
+    
     return 0;
 }

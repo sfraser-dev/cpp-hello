@@ -1,13 +1,19 @@
 CXX := clang++
 CPPFLAGS := -g -Wall 
 
-all: hello-world.exe compiler-language-info.exe test.exe
+all: hello.exe hello2.exe compiler-language-info.exe test.exe
 
-hello-world.exe: hello-world.o
-	$(CXX) hello-world.o -o hello-world.exe
+hello.exe: hello.o
+	$(CXX) hello.o -o hello.exe
 
-hello-world.o:
-	$(CXX) -c $(CPPFLAGS) hello-world.cpp -I.
+hello.o:
+	$(CXX) -c $(CPPFLAGS) hello.cpp -I.
+
+hello2.exe: hello2.o
+	$(CXX) hello2.o -o hello2.exe
+
+hello2.o:
+	$(CXX) -c $(CPPFLAGS) hello2.cpp -I.
 
 compiler-language-info.exe: compiler-language-info.o 
 	$(CXX) compiler-language-info.o -o compiler-language-info.exe
