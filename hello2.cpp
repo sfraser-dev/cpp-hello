@@ -9,6 +9,9 @@
 using std::cout;
 using std::endl;
 
+// static variable
+short Vehicle2::_amount_of_vehicles = 0;
+
 int main() {
     // range based for loop
     for (std::size_t ch : "This is a test") {
@@ -175,16 +178,37 @@ int main() {
     veh2.printInfo();
     cout << "----- copy constructor done" << endl;
 
-    // move constructor execution (beware of elison copying optimising away the call to a move constructor sometimes)
+    // move constructor execution (beware of elison copying optimising away the
+    // call to a move constructor sometimes)
     cout << "----- move constructor" << endl;
     std::vector<Vehicle2> vehvec;
-    // instaniating object in arg list (r-val), "normal" constructor called to create unnamed temp obj, 
-    // then move constructor "steals" the temp objs heap data (so no need to copy it, much more efficient) 
+    // instaniating object in arg list (r-val), "normal" constructor called to
+    // create unnamed temp obj, then move constructor "steals" the temp objs
+    // heap data (so no need to copy it, much more efficient)
     vehvec.push_back(Vehicle2("Bentley", "Baby", 4, "money money money"));
     cout << "vehvec[0] info: " << endl;
     (vehvec.at(0)).printInfo();
     cout << "----- move constructor done" << endl;
 
+    // const correctness
+    cout << "const correctness" << endl;
+    const Vehicle2 veh3_con("Jaguar");
+    // veh3_con.setBrand("Not allowed as setBrand() is not a const function");
+    cout << "veh3_con.getBrand() = " << veh3_con.getBrand() << endl;
+    cout << "const correctness done" << endl;
+
+    // static variable objects created counter
+    cout << "Vehicle2::getAmountOfVehicles() = "
+         << Vehicle2::getAmountOfVehicles() << " 'Vehicle2 objects' in existance"
+         << endl;
+
+    // structs (essentially the same as classes in c++)
+    cout << "structs" <<endl;
+    PersonStruct jsmith("John Smith", 34);
+    jsmith.printInfo();
+
+
+    cout << endl << endl;
     return 0;
 }
 
