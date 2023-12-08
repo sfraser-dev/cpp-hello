@@ -1,14 +1,13 @@
+#include "hello2.h"
 #include <algorithm>
+#include <cstdio>
 #include <iostream>
 #include <ostream>
 #include <string>
-#include "hello2.h"
+#include <vector>
 
 using std::cout;
 using std::endl;
-
-
-class Vehicle2;
 
 int main() {
     // range based for loop
@@ -157,19 +156,74 @@ int main() {
         }
         cout << el << " ";
     }
-    cout << endl;
+    cout << endl << endl;
 
-    // delegated constructors
-    Vehicle2 veh;
-    veh.printInfo();
+    // delegated constructors ("normal" constructor)
+    cout << "----- constructor" << endl;
+    Vehicle2 veh1;
+    veh1.printInfo();
+    cout << "----- constructor done" << endl;
+
+    // deep copy constructor used to create veh2 from veh1
+    cout << "----- copy constructor" << endl;
+    Vehicle2 veh2(veh1);
+    change_vehicle_attributes(veh2);
+    cout << "back in main(): " << endl;
+    cout << "veh1 info: " << endl;
+    veh1.printInfo();
+    cout << "veh2 info: " << endl;
+    veh2.printInfo();
+    cout << "----- copy constructor done" << endl;
+
+    // move constructor execution (beware of elison copying optimising away the call to a move constructor sometimes)
+    cout << "----- move constructor" << endl;
+    std::vector<Vehicle2> vehvec;
+    // instaniating object in arg list (r-val), "normal" constructor called to create unnamed temp obj, 
+    // then move constructor "steals" the temp objs heap data (so no need to copy it, much more efficient) 
+    vehvec.push_back(Vehicle2("Bentley", "Baby", 4, "money money money"));
+    cout << "vehvec[0] info: " << endl;
+    (vehvec.at(0)).printInfo();
+    cout << "----- move constructor done" << endl;
 
     return 0;
+}
+
+// move constructor (the Vehicle2 "normal" constructor will be called first)
+Vehicle2::Vehicle2(Vehicle2 &&sourceTempCopy)
+    : _brand(sourceTempCopy.getBrand()), _model(sourceTempCopy.getModel()),
+      _wheels(sourceTempCopy.getWheels()), _sound(sourceTempCopy.getSound()),
+      // stealing the pointer pointing to the heap data
+      _heap_arr(sourceTempCopy._heap_arr) {
+    cout << "Vehicle2 move constructor called" << endl;
+    // nulling the source's pointer
+    sourceTempCopy._heap_arr = nullptr;
+}
+
+// copy constructor
+Vehicle2::Vehicle2(const Vehicle2 &source)
+    : _brand(source._brand), _model(source._model), _wheels(source._wheels),
+      _sound(source._sound) {
+    cout << "Vehicle2 copy constructor called" << endl;
+    // create new array on heap (deep copy)
+    _heap_arr = new short[]{2001, 2002, 2003, 2004, 2005};
+}
+
+// pass Vehicle2 by reference
+void change_vehicle_attributes(Vehicle2 &v) {
+    cout << "Entering change_vehicle_attributes()..." << endl;
+    cout << "changing brand..." << endl;
+    v.setBrand("HHOONNDDAA");
+    cout << "changing heap arr value..." << endl;
+    v.setHeapArr(0, 2222);
+    v.printInfo();
+    cout << "Exiting change_vehicle_attributes()..." << endl;
 }
 
 void Vehicle2::printInfo() {
     cout << "Brand: " << this->getBrand() << ", Model: " << this->getModel()
          << ", Wheels: " << this->getWheels() << ", Sound: " << this->getSound()
-         << endl;
+         << ", Heap Arr: ";
+    this->getHeapArr();
 }
 
 std::string reverse_string1(const std::string &str) {
