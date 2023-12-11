@@ -1,10 +1,13 @@
 #include "hello2.h"
 #include <algorithm>
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <ostream>
 #include <string>
 #include <vector>
+
+#define _CRT_SECURE_NO_WARNINGS
 
 using std::cout;
 using std::endl;
@@ -199,18 +202,65 @@ int main() {
 
     // static variable objects created counter
     cout << "Vehicle2::getAmountOfVehicles() = "
-         << Vehicle2::getAmountOfVehicles() << " 'Vehicle2 objects' in existance"
-         << endl;
+         << Vehicle2::getAmountOfVehicles()
+         << " 'Vehicle2 objects' in existance" << endl;
 
     // structs (essentially the same as classes in c++)
-    cout << "structs" <<endl;
+    cout << "structs" << endl;
     PersonStruct jsmith("John Smith", 34);
     jsmith.printInfo();
+    cout << endl;
 
+    // MyString operator overloading
+    Mystring empty;          // no args constructor
+    Mystring larry("Larry"); // overloaded
+    Mystring stooge{larry};  // copy constructor
+    empty.display();
+    larry.display();
+    stooge.display();
+    cout << endl;
 
-    cout << endl << endl;
+    cout << endl << endl << endl;
     return 0;
 }
+
+// No-args constructor
+Mystring::Mystring() : str{nullptr} {
+    // initialise string to an explicit null char \0 rather than nullpointer
+    str = new char[1];
+    *str = '\0';
+}
+
+// Overloaded constructor
+Mystring::Mystring(const char *s) : str{nullptr} {
+    if (s == nullptr) {
+        str = new char[1];
+        *str = '\0';
+    } else {
+        str = new char[std::strlen(s) + 1];
+        std::strcpy(str, s);
+    }
+}
+
+// Copy constructor
+Mystring::Mystring(const Mystring &source) : str{nullptr} {
+    str = new char[std::strlen(source.str) + 1];
+    std::strcpy(str, source.str);
+}
+
+// Destructor
+Mystring::~Mystring() { delete[] str; }
+
+// Display method
+void Mystring::display() const {
+    std::cout << str << " : " << get_length() << std::endl;
+}
+
+// length getter
+int Mystring::get_length() const { return std::strlen(str); }
+
+// string getter
+const char *Mystring::get_str() const { return str; }
 
 // move constructor (the Vehicle2 "normal" constructor will be called first)
 Vehicle2::Vehicle2(Vehicle2 &&sourceTempCopy)

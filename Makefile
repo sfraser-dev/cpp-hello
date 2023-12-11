@@ -1,3 +1,4 @@
+# a collection of distict files, not a single project
 CXX := clang++
 CPPFLAGS := -g -Wall 
 LDFLAGS :=

@@ -4,10 +4,26 @@
 #include <iostream>
 #include <string>
 
+class Mystring {
+  private:
+    char *str; // pointer to a char[] that holds a C-style string
+  public:
+    Mystring();                       // No-args contstructor
+    Mystring(const char *s);          // Overloaded contstructor
+    Mystring(const Mystring &source); // Copy constructor
+    ~Mystring();                      // Destructor
+    void display() const;
+    int get_length() const; // getters
+    const char *get_str() const;
+    Mystring& operator=(const Mystring&) noexcept; 
+
+};
+
+// structure not a class
 struct PersonStruct {
   private:
-    short _age;
     std::string _name;
+    short _age;
 
   public:
     void setName(short n) { _name = n; }
@@ -16,8 +32,8 @@ struct PersonStruct {
     short getAge() { return _age; }
 
     PersonStruct() : PersonStruct("None", 0) {}
-    PersonStruct(short a) : PersonStruct("None", a) {}
     PersonStruct(std::string n) : PersonStruct(n, 0) {}
+    PersonStruct(short a) : PersonStruct("None", a) {}
     PersonStruct(std::string n, short a) : _name(n), _age(a) {}
 
     void printInfo() {
