@@ -3,6 +3,7 @@ CXX := clang++
 CPPFLAGS := -g -Wall 
 LDFLAGS :=
 INCLUDEDIRS := -I.
+RM := rm -f
 
 all: hello.exe hello2.exe compiler-language-info.exe test.exe
 
@@ -40,4 +41,4 @@ test-joe.o: test-joe.cpp test-joe.h
 # use wildcard style to stop complaints if file isn't there to be deleted
 .PHONY: clean
 clean:
-	rm -f $(wildcard *.o) $(wildcard *.exe)
+	$(RM) $(wildcard *.o) $(wildcard *.exe)
