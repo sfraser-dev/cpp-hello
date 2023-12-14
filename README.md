@@ -1,1 +1,3 @@
-# Review of the C++ language
+# Review of C++
+
+Refreshing old knowledge.
