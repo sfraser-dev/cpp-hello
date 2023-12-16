@@ -2,18 +2,18 @@
 CXX := clang++
 SANITIZEFLAGS := -fsanitize=address
 # SANITIZEFLAGS :=
-CPPFLAGS := -g -Wall 
+CPPFLAGS := -g -Wall -std=c++17
 LDFLAGS := -lpcre $(SANITIZEFLAGS)
 INCLUDEDIRS := -I.
 RM := rm -f
 
-all: hello.exe hello2.exe compiler-language-info.exe test.exe
+all: hello1.exe hello2.exe compiler-language-info.exe test.exe
 
 # $@ is the target file, $< is the first dependency only, $^ is all dependencies
-hello.exe: hello.o
+hello1.exe: hello1.o
 	$(CXX) $(LDFLAGS) $< -o $@
 
-hello.o: hello.cpp
+hello1.o: hello1.cpp
 	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
 
 hello2.exe: hello2.o hello2.h

@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <ctype.h>
 #include <exception>
+#include <filesystem>
 #include <fstream>
 #include <iomanip> //setw setfill setprecision
 #include <iostream>
@@ -262,16 +263,24 @@ int main() {
     cout << "Input two ints separeted by whitespace: ";
     cin >> yyy >> zzz;
     cout << "you typed " << yyy << " and " << zzz << endl;
-    // system("pause") only works on windows
-    std::system("pause");
+
+    int numIn1;
+    cout << "Input an int to continue: ";
+    cin >> numIn1;
+    while (cin.fail()) {
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "That's not an int, please try again: ";
+        cin >> numIn1;
+    }
 
     // get user input integer
     // By default, C++ streams don't throw upon ill-formed input: it isn't
     // exceptional that input is wrong. It is normal. The C++ approach to
     // indicate input failure is to put the stream into failure state
-    int numIn; // integer input expected as writing to an int, cin knows this
+    int numIn2; // integer input expected as writing to an int, cin knows this
     cout << "Input an int: ";
-    cin >> numIn;
+    cin >> numIn2;
     // cin failure template
     while (cin.fail()) {
         // clear cin as it's in failure state
@@ -280,8 +289,9 @@ int main() {
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         // attempt to get the user input again
         cout << "That's not an int, please try again: ";
-        cin >> numIn;
+        cin >> numIn2;
     }
+
     cout << "You input integer: " << endl;
 
     // math
@@ -519,8 +529,8 @@ int main() {
         myMatrix[r] = &(myArray[r * cols]);
     }
     printRawPtrMatrix<int>(myMatrix, rows, cols, 2);
-    // clean up. for each new used need a delete. for each new[] used need a
-    // delete[]
+    // clean up. for each new used need a delete.
+    // for each new[] used need a delete[]
     delete[] myMatrix[0];
     myArray = 0;
     delete[] myMatrix;
@@ -637,12 +647,13 @@ int main() {
     vehicleSoundPassByPointer(ferrari);
 
     // write to file via output stream
-    std::ofstream fhOut("zout.txt");
+    std::string filename = "zout.txt";
+    std::ofstream fhOut(filename);
     fhOut << "1. Hi there\n2. How are you?\n3. Time to go, bye." << endl;
     fhOut.close();
 
     // read from file via input stream and getline()
-    std::ifstream fhIn("zout.txt");
+    std::ifstream fhIn(filename);
     std::string myString;
     // reading the file one line at a time
     while (std::getline(fhIn, myString)) {
@@ -650,11 +661,28 @@ int main() {
     }
     fhIn.close();
     // delete file
-    std::system("del /F zout.txt");
+    try {
+        if (std::filesystem::remove(filename))
+            std::cout << "file " << filename << " deleted.\n";
+        else
+            std::cout << "file " << filename << " not found.\n";
+    } catch (const std::filesystem::filesystem_error &err) {
+        std::cout << "filesystem error: " << err.what() << '\n';
+    }
     // attempt to open deleted file to check its existance
-    std::ifstream fileOpened("zout.txt");
+    std::ifstream fileOpened(filename);
     if (fileOpened.good()) {
-        perror("Failed to delete zout.txt");
+        char formattedErrorMessageBuffer[100];
+        int retVal, bufferSize = 100;
+        const char *filenameCharPtr = filename.c_str();
+
+        // format an error message
+        retVal = snprintf(formattedErrorMessageBuffer, bufferSize,
+                          "error: failed to delete %s", filenameCharPtr);
+        if ((retVal <= 0) || (retVal >= bufferSize)) {
+            cout << "snprintf: error writing to buffer" << endl;
+        }
+        perror(formattedErrorMessageBuffer);
         return EXIT_FAILURE;
     }
 
@@ -684,7 +712,7 @@ int main() {
     const int myConst = 12; // const
     cout << "myConst = " << myConst << endl;
     enum year { jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec };
-#define MYCONST 12          // preprocessor macro constant
+#define MYCONST 12 // preprocessor macro constant
     cout << "MYCONST preprocessor = " << MYCONST << endl;
     for (std::size_t i = jan; i <= dec; i++) {
         cout << "i = " << i << endl;
@@ -737,6 +765,6 @@ int main() {
     reverse(mystr1.begin(), mystr1.end());
     cout << mystr1 << endl;
     cout << mystr2 << endl;
-    
+
     return 0;
 }
