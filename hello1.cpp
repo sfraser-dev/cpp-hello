@@ -17,6 +17,7 @@
 #include <limits>
 #include <memory>
 #include <ostream>
+#include <sstream>
 #include <stdint.h>
 #include <string>
 #include <utility>
@@ -229,7 +230,12 @@ void vehicleSoundPassByPointer(std::shared_ptr<Vehicle> vehicle) {
 constexpr unsigned int myStr2int(const char *str, int h = 0) {
     return !str[h] ? 5381 : (myStr2int(str, h + 1) * 33) ^ str[h];
 }
+
 constexpr long myVal() { return LONG_MAX / 10; }
+
+void cinIgnoreLine() {
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
 
 int main() {
     // string type
@@ -251,48 +257,83 @@ int main() {
     myStr[0] = 'J';
     cout << myStr << endl;
 
-    // get user input string
+    // (1) Using getline() to read user input string and then
+    //     echo this string back to the user
+    //
+    // Cin >> considers whitespace terminating char, so better to
+    // use getline(). Also, getline() will deal with the newline
+    // that cin leaves in its buffer
     std::string name;
-    cout << "Input your name: ";
-    // cin>> considers whitespace terminating char, so use getline()
+    cout << "Getline: Input your name: ";
     std::getline(cin, name);
     cout << "What's up " << name << endl;
 
-    // taking advantage of cin considering whitespace as terminating character
-    int yyy, zzz;
-    cout << "Input two ints separeted by whitespace: ";
-    cin >> yyy >> zzz;
-    cout << "you typed " << yyy << " and " << zzz << endl;
-
-    int numIn1;
-    cout << "Input an int to continue: ";
-    cin >> numIn1;
-    while (cin.fail()) {
-        cin.clear();
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        cout << "That's not an int, please try again: ";
-        cin >> numIn1;
+    // (2) Using getline() to read a user input string then
+    //     using istringstream to break the string (on
+    //     whitespace) into distinct words
+    //
+    // Use getline to read from stdin into string S
+    // String S can now be treated as the input stream
+    // by using istringstream
+    // Easier to parse a string than to parse stdin
+    // Using istringstream, we can now treat string S
+    // as the input stream (like cin, where whitespace
+    // is treated as a terminating character)
+    std::string readLine;
+    cout << "Getline with istringstream: Input your name: ";
+    std::getline(cin, readLine);
+    std::istringstream iss{readLine};
+    std::string word;
+    int count{0};
+    while (iss >> word) {
+        cout << word << endl;
+        count++;
     }
+    cout << "input word count = " << count << endl;
 
-    // get user input integer
-    // By default, C++ streams don't throw upon ill-formed input: it isn't
-    // exceptional that input is wrong. It is normal. The C++ approach to
-    // indicate input failure is to put the stream into failure state
-    int numIn2; // integer input expected as writing to an int, cin knows this
-    cout << "Input an int: ";
-    cin >> numIn2;
-    // cin failure template
-    while (cin.fail()) {
-        // clear cin as it's in failure state
-        cin.clear();
-        // ignore offending characters by ignoring everything
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        // attempt to get the user input again
-        cout << "That's not an int, please try again: ";
-        cin >> numIn2;
+    // (3) Using raw cin to read an integer from the user with lots
+    //     of error handling
+    // 
+    // Handling invalid input from user using cin
+    // https://www.learncpp.com/cpp-tutorial/stdcin-and-handling-invalid-input/
+    //
+    // By default, C++ streams don't throw upon ill-formed input, it isn't
+    // exceptional that user input is wrong. It is normal. The C++ approach to
+    // indicate input failure is to put the stream into a failure state
+    //
+    // nb: It's easier to wrap cin in getline() then parse the string with raw cin
+    // 
+    // fwfk229: invalid input
+    // &^7wkd1: invalid input
+    // 234dkje: valid input (234)
+    // 1019999: valid input (1019999)
+    while (1) {
+        cout << "Cin: Input an int: ";
+        int numIn {};
+        // integer input expected as writing to an int, cin knows this
+        cin >> numIn;
+        // check for failed extraction
+        if (cin.fail()) {
+            // if the stream was closed, exit program now
+            if (cin.eof()) {
+                exit(1);
+            }
+            // handle the failure: put cin back into normal operation mode
+            cin.clear();
+            // handle the failure: remove the bad input
+            cinIgnoreLine();
+            cout << "That's not an int, please try again!" << endl;
+        }
+        // extraction succeeded
+        else {
+            cin.clear();
+            // remove any extraneous input
+            cinIgnoreLine();
+            cout << "You entered integer: " << numIn << endl;
+            break;
+        }
     }
-
-    cout << "You input integer: " << endl;
+    cout << endl;
 
     // math
     cout << "sqrt(25) = " << sqrt(25) << endl;
@@ -370,7 +411,6 @@ int main() {
     assert(pp_ptr != NULL);
     cout << "pp = " << pp << ", pp_ptr = " << pp_ptr
          << ", *pp_ptr = " << *pp_ptr << endl;
-    std::getline(cin, name);
     // exceptions - try, throw, catch, elipses(...),
     try {
         auto age = 15;
