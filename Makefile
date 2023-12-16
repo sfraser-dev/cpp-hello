@@ -1,7 +1,9 @@
 # a collection of distict files, not a single project
 CXX := clang++
+SANITIZEFLAGS := -fsanitize=address
+# SANITIZEFLAGS :=
 CPPFLAGS := -g -Wall 
-LDFLAGS :=
+LDFLAGS := -lpcre $(SANITIZEFLAGS)
 INCLUDEDIRS := -I.
 RM := rm -f
 
@@ -41,4 +43,4 @@ test-joe.o: test-joe.cpp test-joe.h
 # use wildcard style to stop complaints if file isn't there to be deleted
 .PHONY: clean
 clean:
-	$(RM) $(wildcard *.o) $(wildcard *.exe)
+	$(RM) $(wildcard *.o) $(wildcard *.exe) $(wildcard *.out)

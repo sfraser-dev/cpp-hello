@@ -13,7 +13,7 @@
 #include <fstream>
 #include <iomanip> //setw setfill setprecision
 #include <iostream>
-#include <limits.h>
+#include <limits>
 #include <memory>
 #include <ostream>
 #include <stdint.h>
