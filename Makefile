@@ -2,12 +2,12 @@
 CXX := clang++
 SANITIZEFLAGS := -fsanitize=address
 # SANITIZEFLAGS :=
-CPPFLAGS := -g -Wall -std=c++17
+CPPFLAGS := -g -Wall -std=c++17 $(SANITIZEFLAGS)
 LDFLAGS := -lpcre $(SANITIZEFLAGS)
 INCLUDEDIRS := -I.
 RM := rm -f
 
-all: hello1.exe hello2.exe compiler-language-info.exe test.exe
+all: hello1.exe hello2.exe compiler-language-info.exe leaky.exe test.exe
 
 # $@ is the target file, $< is the first dependency only, $^ is all dependencies
 hello1.exe: hello1.o
@@ -28,15 +28,22 @@ compiler-language-info.exe: compiler-language-info.o
 compiler-language-info.o: compiler-language-info.cpp
 	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
 
+# Google sanitizer testing with leaky code
+leaky.exe: leaky.o
+	$(CXX) $(LDFLAGS) $< -o $@
+
+leaky.o: leaky.cpp
+	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
+
 # link the object code to other libraries (eg: std c++ library) and output executable
 test.exe: test.o test-joe.o
 	$(CXX) $(LDFLAGS) $^ -o $@
 
-# compile sourde to object code
+# compile source to object code
 test.o: test.cpp test-joe.h 
 	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
 
-# compile sourde to object code
+# compile source to object code
 test-joe.o: test-joe.cpp test-joe.h
 	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
 
