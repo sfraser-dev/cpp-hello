@@ -22,7 +22,7 @@ hello2.exe: hello2.o hello2.h
 hello2.o: hello2.cpp
 	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
 
-compiler-language-info.exe: compiler-language-info.o 
+compiler-language-info.exe: compiler-language-info.o
 	$(CXX) $(LDFLAGS) $< -o $@
 
 compiler-language-info.o: compiler-language-info.cpp
@@ -40,7 +40,7 @@ test.exe: test.o test-joe.o
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 # compile source to object code
-test.o: test.cpp test-joe.h 
+test.o: test.cpp test-joe.h
 	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
 
 # compile source to object code

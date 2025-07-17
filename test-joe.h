@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+extern std::string name;
+
 void greetings(std::string);
 
 #endif
