@@ -1,7 +1,7 @@
 # a collection of distict files, not a single project
 CXX := clang++
-SANITIZEFLAGS := -fsanitize=address
-# SANITIZEFLAGS :=
+#SANITIZEFLAGS := -fsanitize=address
+SANITIZEFLAGS :=
 CPPFLAGS := -g -Wall -std=c++17 $(SANITIZEFLAGS)
 LDFLAGS := -lpcre $(SANITIZEFLAGS)
 INCLUDEDIRS := -I.
