@@ -72,6 +72,15 @@ dkms.conf
 # Compiled Static libraries
 *.lai
 
-# Executables
-
-# End of https://www.toptal.com/developers/gitignore/api/c,c++
+### CMake ###
+# CMake build directory
+/build/
+# Other common CMake generated files/directories
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+.cmake/
+_CPack_Packages/
+DartConfiguration.tcl

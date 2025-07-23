@@ -1,13 +1,13 @@
 # a collection of distict files, not a single project
-CXX := clang++
+CXX := clang++-20
 #SANITIZEFLAGS := -fsanitize=address
 SANITIZEFLAGS :=
-CPPFLAGS := -g -Wall -std=c++17 $(SANITIZEFLAGS)
+CPPFLAGS := -g -Wall -std=c++20 $(SANITIZEFLAGS)
 LDFLAGS := -lpcre $(SANITIZEFLAGS)
 INCLUDEDIRS := -I.
 RM := rm -f
 
-all: hello1.exe hello2.exe compiler-language-info.exe leaky.exe test.exe
+all: hello1.exe hello2.exe hello3.exe compiler-language-info.exe leaky.exe test.exe
 
 # $@ is the target file, $< is the first dependency only, $^ is all dependencies
 hello1.exe: hello1.o
@@ -20,6 +20,12 @@ hello2.exe: hello2.o hello2.h
 	$(CXX) $(LDFLAGS) $< -o $@
 
 hello2.o: hello2.cpp
+	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
+
+hello3.exe: hello3.o
+	$(CXX) $(LDFLAGS) $< -o $@
+
+hello3.o: hello3.cpp
 	$(CXX) $(CPPFLAGS) -c $< $(INCLUDEDIRS)
 
 compiler-language-info.exe: compiler-language-info.o
