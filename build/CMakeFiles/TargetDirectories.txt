@@ -1,0 +1,10 @@
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/hello1.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/hello2.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/hello3.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/compiler-language-info.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/leaky.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/test.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/all_build.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/run_all.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/edit_cache.dir
+/mnt/data2/local-D2/git-hubkoala/cpp-hello/build/CMakeFiles/rebuild_cache.dir
